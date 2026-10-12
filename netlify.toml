@@ -1,0 +1,37 @@
+# Netlify Configuration for EVP Virtual Tour
+
+[build]
+  publish = "."
+
+# 1. Default load routes straight to 3D Lanyard VIP Pass
+[[redirects]]
+  from = "/"
+  to = "/loading/"
+  status = 302
+  force = true
+
+# 2. Clean URL: /tour routes directly to Tour/index.htm
+[[redirects]]
+  from = "/tour"
+  to = "/Tour/index.htm"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/tour/"
+  to = "/Tour/index.htm"
+  status = 301
+  force = true
+
+# Header optimizations for 3DVista tour assets
+[[headers]]
+  for = "/Tour/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
+
+# Header optimizations for 3D Lanyard assets
+[[headers]]
+  for = "/loading/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"

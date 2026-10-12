@@ -1,0 +1,37 @@
+#: locale=en
+
+## Media
+
+### Title
+panorama_14390653_1A35_F993_419E_5200101D22EA.label = Co-Working Lounge
+panorama_17CF12C3_1A35_FEF3_41A3_EBBC7502958A.label = Corporate Boardroom
+panorama_142C182A_1A35_E9BD_41AB_34F141C2458B.label = Curated Café Area
+panorama_16732D79_1A36_AB9E_41B4_17DA451FAD1D.label = Entrance Plaza & Foyer
+panorama_17EBACD2_1A35_EAED_41B9_24102920D4D7.label = Executive Hospitality Pavilion
+panorama_17D9A0CA_1A35_FAFD_4196_CAFED30EBD28.label = Executive Meeting Room
+panorama_0A7DA10A_1A35_DB7D_41B4_BF70473A2B81.label = Food Court
+panorama_17FA28A5_1A35_EAB7_41AA_3D3507B87DCE.label = Food Court Dining Area
+panorama_148F076E_19C6_503C_4175_2B694033F3E8.label = Hall A - Cabaret
+panorama_14632B5C_19C2_F01C_41B7_19C4ED3227EC.label = Hall A - Classroom
+panorama_14B30DF1_19C2_D024_41AA_3C824F7F20A4.label = Hall A - Theatre
+panorama_0A0CFEC9_1A42_7064_41A1_34662EF6218E.label = Hall B - Cabaret
+panorama_0A0E6ECC_1A42_707C_418D_CCE338F5D70E.label = Hall B - Classroom
+panorama_0A0ECECD_1A42_707C_416B_7403D0DB0E66.label = Hall B - Theatre
+panorama_149851EE_1A42_B03D_41B3_8F40B9F80F84.label = Hall C - Cabaret
+panorama_149B71EE_1A42_B03D_41B4_24738D3F79F4.label = Hall C - Classroom
+panorama_149B41EF_1A42_B03B_41A2_8875FDDE6A3E.label = Hall C - Theatre
+panorama_14F604E8_1A42_B024_417F_E24278F9F431.label = Hall D - Cabaret
+panorama_14F664E8_1A42_B024_41B1_96D22060E4C2.label = Hall D - Classroom
+panorama_14F6B4E9_1A42_B024_41AD_D3E938DF4EA2.label = Hall D - Theatre
+panorama_14096C80_1A35_E96D_4187_6E8C251903E8.label = Inter-Hall Covered Connection
+panorama_141CBA91_1A35_E96F_41B4_7CACC79D7D5D.label = On-Site Hotel
+panorama_17D2FED0_1A35_E6ED_41B9_16264B6669B1.label = Private Meeting Suites
+panorama_1434249B_1A35_FA93_419A_FA79BE1231B2.label = VIP Lounge
+panorama_1465AE93_1A35_E693_4186_8710BFE5B257.label = Washroom/Amenity Area
+
+## Tour
+
+### Description
+
+### Title
+tour.name = EVP - TRADE AND CONVENTION CENTRE

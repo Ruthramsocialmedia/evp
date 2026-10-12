@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>EVP Convention Centre — VIP Lanyard & Pass</title>
+
+  <!-- Flaticon UIcons (Exact Same Standard as Tour) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons@3.3.1/css/all/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons@3.3.1/css/brands/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- Font Awesome 6 (Fallback CDN) -->
+  <!-- Typography: Plus Jakarta Sans & Satoshi -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@500,700,900&display=swap" rel="stylesheet">
+
+  <!-- React Bits 3D Lanyard Stylesheet -->
+  <link rel="stylesheet" href="Lanyard.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #070E1B;
+      color: #FFFFFF;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       REACT BITS 3D LANYARD INTERACTIVE STAGE (DIRECT TO TOUR)
+       ======================================================================== -->
+  <div id="lanyard-container" class="lanyard-wrap">
+    
+    <!-- Ambient Particle / Star Grid -->
+    <div class="lanyard-ambient-grid"></div>
+
+    <!-- Floating HUD Controls Overlay -->
+    <div class="lanyard-overlay">
+      <!-- Top Venue Header -->
+      <header class="lanyard-header">
+        <h1 class="lanyard-brand-title">EVP TRADE AND CONVENTION CENTRE</h1>
+        <div class="lanyard-brand-subtitle">CHENNAI • 24-ACRE INTEGRATED CAMPUS</div>
+      </header>
+
+      <!-- Bottom Action Bar (Direct to Tour) -->
+      <footer class="lanyard-footer">
+        <button id="lanyard-enter-btn" class="lanyard-enter-btn" type="button">
+          <i class="fi fi-rr-sparkles"></i> TAP PASS TO ENTER TOUR
+        </button>
+        <div class="lanyard-hint">
+          Drag to swing • Tap to flip • Double-tap card or click button below to enter
+        </div>
+      </footer>
+    </div>
+
+  </div>
+
+  <!-- Three.js (r160 CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+
+  <!-- Pre-rendered Luxury Badge Textures (Zero CORS / file:/// protocol compatible) -->
+  <script src="textures.js"></script>
+
+  <!-- React Bits 3D Physics Lanyard Controller -->
+  <script src="lanyard.js"></script>
+
+  <script>
+    // Initialize the React Bits 3D Lanyard simulation
+    window.addEventListener('DOMContentLoaded', function () {
+      var container = document.getElementById('lanyard-container');
+      if (container && window.EVPLanyard) {
+        EVPLanyard.init(container, {
+          finish: 'holographic',
+          metal: 'gold',
+          orientation: 'portrait',
+          size: 0.52,
+          strapLength: 0.26,
+          gravity: 1.0,
+          damping: 0.55,
+          elasticity: 0.5,
+          breeze: 0.6,
+          interactive: true,
+          intro: true,
+          tourUrl: '../Tour/index.htm'
+        });
+
+        var enterBtn = document.getElementById('lanyard-enter-btn');
+        if (enterBtn) {
+          enterBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            EVPLanyard.enterTour(true);
+          });
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

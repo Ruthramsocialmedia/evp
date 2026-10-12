@@ -1,0 +1,8 @@
+# Netlify Redirects Configuration
+
+# 1. Default load routes straight to loading/
+/          /loading/           302!
+
+# 2. Clean URL: /tour routes directly to Tour/index.htm
+/tour      /Tour/index.htm     301!
+/tour/     /Tour/index.htm     301!

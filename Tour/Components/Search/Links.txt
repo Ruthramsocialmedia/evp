@@ -1,0 +1,16 @@
+# EVP Trade & Convention Centre — Portals & Specification Links
+# Format: Name=https://url
+EVP Trade & Convention Centre — Official Portal=https://www.evptradecentre.com/
+Exhibition Hall A — Pillarless Mega Hall (54,144 sq. ft.)=https://www.evptradecentre.com/#hall-a
+Exhibition Hall B — Pillarless Mega Hall (54,144 sq. ft.)=https://www.evptradecentre.com/#hall-b
+Exhibition Hall C — Pillarless Mega Hall (54,144 sq. ft.)=https://www.evptradecentre.com/#hall-c
+Exhibition Hall D — Plenary & Trade Hall (47,762 sq. ft.)=https://www.evptradecentre.com/#hall-d
+Executive Hospitality Pavilion — VIP Suites & Lounges=https://www.evptradecentre.com/#pavilion
+Corporate Boardrooms & Meeting Suites=https://www.evptradecentre.com/#boardroom
+Engineering Specifications — 300 TR AC & 5T Floor Load=https://www.evptradecentre.com/#specifications
+EVP On-Site Luxury Hotel & Guest Accommodation=https://www.evptradecentre.com/#hotel
+Food Court & Multi-Cuisine Dining Concourse=https://www.evptradecentre.com/#dining
+Open Canvas 1 & 2 — Outdoor Exhibition Grounds=https://www.evptradecentre.com/#outdoor-canvas
+Visitor & Heavy Transport Parking Zones 1 & 2=https://www.evptradecentre.com/#parking
+Chennai – Bengaluru Highway Location & Driving Directions=https://maps.google.com/?cid=evp-trade-centre
+Event Organiser Booking & RFP Enquiry=mailto:info@evptradecentre.com

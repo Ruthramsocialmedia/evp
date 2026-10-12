@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>EVP - TRADE AND CONVENTION CENTRE</title>
+    <!-- Favicon & App Icons (Official EVP Luxury Brand) -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="icon" type="image/png" href="Components/Logo/Assets/Luxury EVP Trade and Convention Logo.png" />
+    <!-- Global Tour Fonts -->
+    <link rel="stylesheet" href="fonts.css?v=1791364251778">
+    <!-- Flaticon UIcons (CDN Icons) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons@3.3.1/css/all/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@flaticon/flaticon-uicons@3.3.1/css/brands/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Font Awesome 6 (Fallback CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" id="metaViewport"
+        content="user-scalable=no, initial-scale=1, width=device-width, viewport-fit=cover"
+        data-tdv-general-scale="0.5" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <script src="lib/tdvplayer.js?v=1791364251778"></script>
+    <link rel="preload" href="locale/en.txt?v=1791364251778" as="fetch" crossorigin="anonymous" />
+    <link rel="preload" href="script.js?v=1791364251778" as="script" />
+    <meta name="description" content="Virtual Tour" />
+    <meta name="theme-color" content="#FFFFFF" />
+    <script src="script.js?v=1791364251778"></script>
+    <!-- Fuse.js for fuzzy intent matching -->
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+    <style type="text/css">
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .fill-viewport {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .fill-viewport.landscape-left {
+            left: env(safe-area-inset-left);
+        }
+
+        .fill-viewport.landscape-right {
+            right: env(safe-area-inset-right);
+        }
+
+        #viewer {
+            z-index: 1;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="viewer" class="fill-viewport"></div>
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- COMPONENT LOADER: 3-Stage Dynamic Bootstrap Lifecycle       -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <script>
+        setTimeout(function () {
+            // Stage 1: Load Core Framework (injects FontAwesome 6 + Satoshi & Plus Jakarta Sans fonts)
+            var comp = document.createElement("script");
+            comp.src = "Components/component.js";
+            comp.onload = function () {
+
+                // Stage 2: Load Audio Consent & Background Music player
+                var musicScript = document.createElement("script");
+                musicScript.src = "Components/Music/music.js?v=" + Date.now();
+                musicScript.onload = function () {
+
+                    // Stage 3: Load interactive UI components once audio consent is resolved (user clicks Yes or No)
+                    document.addEventListener("musicConsentResolved", function () {
+                        var scripts = [
+                            // Top-Left: Branding card overlay with emblem & title
+                            "Components/Logo/Logo.js?v=" + Date.now(),
+
+                            // Top-Center: "Now Exploring" live scene widget & scene drawer
+                            "Components/Panolist/Panolist.js",
+
+                            // Top-Center Stepper: Unified 24-step master tour navigation (GSV + 360° Panos)
+                            "Components/TopStepper/top-stepper.js",
+
+                            // Top-Right: Quick Action cluster (Eye clean mode, Audio toggle, Fullscreen)
+                            "Components/WidgetDock/widget_dock.js",
+
+                            // Street View: Google Street View 360 modal popup
+                            "Components/WidgetDock/gsv-popup.js",
+
+                            // 3D Tour: Interactive 3D Virtual Twin Tour modal popup
+                            "Components/WidgetDock/tour-3d.js",
+
+                            // Mandatory Disclosure: Regulatory and documents modal viewer
+                            "Components/WidgetDock/disclosure-popup.js",
+
+                            // Bottom-Center: Floating navigation dock (Home, Explore, Street View, Social)
+                            "Components/Menu/menu.js",
+
+                            // Search: Instant panorama and facility search modal
+                            "Components/Search/search.js",
+
+                            // Location: Directions, coordinates and live map modal
+                            "Components/Location/location.js",
+
+                            // Specs & Infographics: Architectural dataset & Bento specs drawer
+                            "Components/Specs/specs-data.js",
+                            "Components/Specs/specs-drawer.js",
+
+                            // Stage Simulator: Interactive stage sizing & seating capacity modeler (Halls A-D)
+                            "Components/StageSimulator/stage-simulator.js",
+
+                            // Floor Plan: Interactive 2D Venue Site Map & real-time Radar Cone
+                            "Components/FloorPlan/floorplan.js",
+
+                            // GSV-Pano-POV: Layered outdoor campus 360 player engine
+                            "Components/GsvPov/gsv-pov-player.js",
+
+                            // Contact: Booking hotline, WhatsApp, RFP email, and venue info modal
+                            "Components/Contact Us/contact.js"
+                        ];
+
+                        scripts.forEach(function (src) {
+                            var script = document.createElement("script");
+                            script.src = src + (src.indexOf("?") === -1 ? "?v=" + Date.now() : "");
+                            script.async = true;
+                            document.body.appendChild(script);
+                        });
+                    });
+                };
+                document.body.appendChild(musicScript);
+            };
+            document.body.appendChild(comp);
+        }, 3000);
+    </script>
+</body>
+
+</html>

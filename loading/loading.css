@@ -1,0 +1,635 @@
+/* ==========================================================================
+   EVP TRADE & CONVENTION CENTRE — VIP HOLOGRAPHIC RFID LOADER
+   Obsidian Glassmorphism | 3D Gyro/Mouse Perspective | Holographic Foil Shaders
+   ========================================================================== */
+
+:root {
+  --evp-gold-primary: #FFB703;
+  --evp-gold-hover: #E0A100;
+  --evp-gold-bright: #FFE382;
+  --evp-navy-bg: #070E1B;
+  --evp-navy-surface: #0F1E36;
+  --evp-navy-border: #1A2D4F;
+  --evp-text-light: #FFFFFF;
+  --evp-text-muted: #94A3B8;
+  --evp-green-wa: #25D366;
+  --evp-emerald: #10B981;
+}
+
+/* --------------------------------------------------------------------------
+   Full-Screen Obsidian Stage
+   -------------------------------------------------------------------------- */
+#evp-loader-stage {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 999999;
+  background: radial-gradient(circle at 50% 45%, #0F1E36 0%, #070E1B 60%, #03060C 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: var(--evp-text-light);
+  user-select: none;
+  -webkit-user-select: none;
+  perspective: 1200px;
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#evp-loader-stage.evp-loader-dismissed {
+  opacity: 0;
+  transform: scale(1.08);
+  pointer-events: none;
+}
+
+/* Ambient Dust Particles / Subtle Star Grid */
+.evp-ambient-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(rgba(255, 183, 3, 0.12) 1px, transparent 1px),
+    radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px, 20px 20px;
+  background-position: 0 0, 20px 20px;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Atmospheric Glow Orb */
+.evp-ambient-glow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 183, 3, 0.15) 0%, rgba(15, 30, 54, 0.05) 60%, transparent 80%);
+  filter: blur(40px);
+  pointer-events: none;
+  animation: evpPulseGlow 6s ease-in-out infinite alternate;
+}
+
+@keyframes evpPulseGlow {
+  0% { transform: scale(0.9) translateY(-20px); opacity: 0.6; }
+  100% { transform: scale(1.15) translateY(20px); opacity: 0.95; }
+}
+
+/* --------------------------------------------------------------------------
+   Lanyard Strap & Hardware (Top Anchor)
+   -------------------------------------------------------------------------- */
+.evp-lanyard-hanger {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+  margin-bottom: -18px;
+  transform-style: preserve-3d;
+}
+
+.evp-lanyard-strap {
+  width: 32px;
+  height: 70px;
+  background: repeating-linear-gradient(
+    0deg,
+    #0c1220 0px,
+    #141e33 6px,
+    #0c1220 12px
+  );
+  border-left: 2px solid rgba(255, 183, 3, 0.4);
+  border-right: 2px solid rgba(255, 183, 3, 0.4);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  position: relative;
+}
+
+.evp-lanyard-strap::after {
+  content: "EVP";
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%) rotate(90deg);
+  white-space: nowrap;
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  color: rgba(255, 183, 3, 0.85);
+}
+
+.evp-lanyard-clip {
+  width: 22px;
+  height: 26px;
+  background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 40%, #cbd5e1 70%, #475569 100%);
+  border-radius: 4px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+  position: relative;
+  margin-top: -4px;
+}
+
+.evp-lanyard-ring {
+  width: 14px;
+  height: 14px;
+  border: 3px solid #cbd5e1;
+  border-radius: 50%;
+  margin-top: -6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* --------------------------------------------------------------------------
+   3D Tilt Card Container & Body
+   -------------------------------------------------------------------------- */
+.evp-card-container {
+  position: relative;
+  width: 340px;
+  max-width: 90vw;
+  height: 520px;
+  max-height: 78vh;
+  transform-style: preserve-3d;
+  will-change: transform;
+  cursor: pointer;
+  z-index: 20;
+}
+
+.evp-card-body {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  border-radius: 24px;
+  background: rgba(7, 14, 27, 0.82);
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  border: 1.5px solid rgba(255, 183, 3, 0.35);
+  box-shadow: 
+    0 25px 60px -10px rgba(0, 0, 0, 0.75),
+    0 0 40px rgba(255, 183, 3, 0.15),
+    inset 0 1px 1px rgba(255, 255, 255, 0.25);
+  padding: 24px 20px 20px 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.evp-card-body:hover {
+  border-color: rgba(255, 183, 3, 0.65);
+  box-shadow: 
+    0 30px 70px -10px rgba(0, 0, 0, 0.85),
+    0 0 50px rgba(255, 183, 3, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.4);
+}
+
+/* Top Slot Punch for Lanyard */
+.evp-punch-slot {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 8px;
+  background: rgba(3, 6, 12, 0.9);
+  border: 1px solid rgba(255, 183, 3, 0.3);
+  border-radius: 10px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+}
+
+/* --------------------------------------------------------------------------
+   Dynamic Holographic & Iridescent Foil Shader Layer
+   -------------------------------------------------------------------------- */
+.evp-holographic-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  pointer-events: none;
+  background: linear-gradient(
+    calc(var(--sheen-angle, 135deg)),
+    transparent 0%,
+    rgba(255, 183, 3, 0.08) 25%,
+    rgba(255, 255, 255, 0.22) 48%,
+    rgba(147, 197, 253, 0.25) 52%,
+    rgba(255, 183, 3, 0.18) 58%,
+    transparent 75%
+  );
+  opacity: var(--sheen-opacity, 0.65);
+  mix-blend-mode: color-dodge;
+  transition: opacity 0.2s ease-out;
+  z-index: 5;
+}
+
+/* Security Guilloche Mesh (Fine Vector Watermark) */
+.evp-guilloche-bg {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 50% 30%, transparent 40px, rgba(255, 183, 3, 0.04) 41px, transparent 42px),
+    radial-gradient(circle at 50% 30%, transparent 70px, rgba(255, 183, 3, 0.04) 71px, transparent 72px),
+    radial-gradient(circle at 50% 30%, transparent 100px, rgba(255, 183, 3, 0.04) 101px, transparent 102px),
+    radial-gradient(circle at 50% 30%, transparent 130px, rgba(255, 183, 3, 0.04) 131px, transparent 132px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Card Interior Sections
+   -------------------------------------------------------------------------- */
+.evp-card-header {
+  position: relative;
+  z-index: 6;
+  text-align: center;
+  margin-top: 6px;
+  transform: translateZ(18px);
+}
+
+.evp-brand-crest {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 2px 8px rgba(255, 183, 3, 0.35));
+}
+
+.evp-brand-title {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  margin: 0;
+  color: var(--evp-text-light);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+.evp-brand-subtitle {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  color: var(--evp-gold-primary);
+  margin-top: 3px;
+}
+
+/* Mid Card Badge & Smart Chip */
+.evp-card-mid {
+  position: relative;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transform: translateZ(24px);
+}
+
+.evp-chip-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6px;
+}
+
+.evp-rfid-chip {
+  width: 42px;
+  height: 32px;
+  background: linear-gradient(135deg, #d4af37 0%, #fef08a 35%, #b45309 70%, #fef08a 100%);
+  border-radius: 6px;
+  position: relative;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(180, 83, 9, 0.8);
+  overflow: hidden;
+}
+
+.evp-rfid-chip::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(120, 53, 15, 0.6);
+  border-radius: 3px;
+}
+
+.evp-rfid-chip::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(120, 53, 15, 0.7);
+}
+
+.evp-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(255, 183, 3, 0.12);
+  border: 1px solid rgba(255, 183, 3, 0.4);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--evp-gold-bright);
+  text-transform: uppercase;
+}
+
+.evp-badge-pill i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--evp-gold-primary);
+  line-height: 1;
+}
+
+.evp-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--evp-emerald);
+  box-shadow: 0 0 8px var(--evp-emerald);
+  animation: evpBlink 2s ease-in-out infinite;
+}
+
+@keyframes evpBlink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* Credential Metadata Matrix */
+.evp-credential-meta {
+  background: rgba(15, 30, 54, 0.6);
+  border: 1px solid var(--evp-navy-border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.evp-meta-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.evp-meta-label {
+  font-size: 8.5px;
+  font-weight: 600;
+  color: var(--evp-text-muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.evp-meta-val {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--evp-text-light);
+  letter-spacing: 0.5px;
+  margin-top: 1px;
+}
+
+.evp-meta-val.gold {
+  color: var(--evp-gold-primary);
+}
+
+/* --------------------------------------------------------------------------
+   Card Footer & Telemetry Scanner
+   -------------------------------------------------------------------------- */
+.evp-card-footer {
+  position: relative;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transform: translateZ(28px);
+}
+
+/* Progress Laser Bar */
+.evp-progress-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.evp-progress-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 15%;
+  background: linear-gradient(90deg, #b45309 0%, var(--evp-gold-primary) 70%, #ffffff 100%);
+  border-radius: 4px;
+  box-shadow: 0 0 10px var(--evp-gold-primary);
+  transition: width 0.3s ease-out;
+}
+
+/* Telemetry Ticker */
+.evp-telemetry-text {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--evp-text-muted);
+  letter-spacing: 0.8px;
+  text-align: center;
+  min-height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.evp-telemetry-text .scanner-pulse {
+  color: var(--evp-gold-primary);
+  font-size: 12px;
+}
+
+/* Tap to Enter Primary Button */
+.evp-enter-btn {
+  width: 100%;
+  height: 46px;
+  border-radius: 14px;
+  border: 1px solid var(--evp-gold-primary);
+  background: linear-gradient(135deg, rgba(255, 183, 3, 0.25) 0%, rgba(224, 161, 0, 0.45) 100%);
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(255, 183, 3, 0.25);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.evp-enter-btn i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--evp-gold-bright);
+}
+
+.evp-telemetry-text i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--evp-emerald);
+}
+
+.evp-enter-btn::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.25) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.evp-enter-btn:hover {
+  background: linear-gradient(135deg, rgba(255, 183, 3, 0.4) 0%, rgba(224, 161, 0, 0.65) 100%);
+  box-shadow: 0 6px 25px rgba(255, 183, 3, 0.45);
+  transform: translateY(-1px);
+}
+
+.evp-enter-btn:hover::before {
+  opacity: 1;
+}
+
+.evp-enter-btn:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+.evp-enter-btn.ready-pulse {
+  animation: evpBtnPulse 1.8s infinite;
+}
+
+@keyframes evpBtnPulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 183, 3, 0.5); }
+  70% { box-shadow: 0 0 0 14px rgba(255, 183, 3, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 183, 3, 0); }
+}
+
+/* Barcode & Security Microprint */
+.evp-barcode-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 4px;
+}
+
+.evp-barcode {
+  display: flex;
+  gap: 2px;
+  height: 16px;
+  align-items: flex-end;
+  opacity: 0.5;
+}
+
+.evp-barcode span {
+  background: #FFFFFF;
+  height: 100%;
+  width: 1px;
+}
+.evp-barcode span.thick { width: 3px; }
+.evp-barcode span.med { width: 2px; }
+
+.evp-serial-text {
+  font-size: 8.5px;
+  font-family: "Courier New", Courier, monospace;
+  color: var(--evp-text-muted);
+  letter-spacing: 1px;
+}
+
+/* --------------------------------------------------------------------------
+   External Under-Card Actions (Mute / Silence Path)
+   -------------------------------------------------------------------------- */
+.evp-stage-bottom {
+  margin-top: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  z-index: 10;
+  transform-style: preserve-3d;
+}
+
+.evp-silent-link {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--evp-text-muted);
+  letter-spacing: 1px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.evp-silent-link i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--evp-text-muted);
+  transition: color 0.2s ease;
+}
+
+.evp-silent-link:hover {
+  color: var(--evp-text-light);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.evp-silent-link:hover i {
+  color: var(--evp-gold-primary);
+}
+
+.evp-device-hint {
+  font-size: 10px;
+  color: rgba(148, 163, 184, 0.6);
+  letter-spacing: 0.6px;
+}
+
+/* --------------------------------------------------------------------------
+   Mobile Viewport Fine-Tuning
+   -------------------------------------------------------------------------- */
+@media (max-width: 480px) {
+  .evp-card-container {
+    width: 320px;
+    height: 480px;
+  }
+  .evp-card-body {
+    padding: 20px 16px 16px 16px;
+  }
+  .evp-brand-title {
+    font-size: 17px;
+    letter-spacing: 2.5px;
+  }
+  .evp-enter-btn {
+    height: 48px; /* Safe mobile touch target */
+    font-size: 11.5px;
+  }
+  .evp-lanyard-strap {
+    height: 50px;
+  }
+  .evp-stage-bottom {
+    margin-top: 16px;
+  }
+}
