@@ -3,24 +3,11 @@
 [build]
   publish = "."
 
-# 1. Default load routes straight to 3D Lanyard VIP Pass
+# Direct visitors from root domain straight into the 3D Lanyard VIP Pass
 [[redirects]]
   from = "/"
   to = "/loading/"
   status = 302
-  force = true
-
-# 2. Clean URL: /tour routes directly to Tour/index.htm
-[[redirects]]
-  from = "/tour"
-  to = "/Tour/index.htm"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/tour/"
-  to = "/Tour/index.htm"
-  status = 301
   force = true
 
 # Header optimizations for 3DVista tour assets

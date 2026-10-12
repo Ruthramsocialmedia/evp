@@ -1345,8 +1345,7 @@
       if (overlay) overlay.classList.add('dismissed');
 
       setTimeout(function () {
-        var target = (window.location.protocol === 'file:') ? '../Tour/index.htm' : '/tour';
-        window.location.href = target + (withAudio ? '?audio=1' : '?audio=0');
+        window.location.href = '../Tour/index.htm' + (withAudio ? '?audio=1' : '?audio=0');
       }, 500);
     }
   };
