@@ -10,6 +10,27 @@
     audio.loop = true;
     window.bgAudio = audio; // Expose globally for WidgetDock toggle
 
+    // ─── Query Param Handoff (from 3D Lanyard VIP Pass) ───────
+    const urlParams = new URLSearchParams(window.location.search);
+    const audioParam = urlParams.get('audio');
+
+    if (audioParam === '1') {
+        audio.play().catch(function (err) {
+            console.warn("Audio autoplay blocked by browser:", err);
+        });
+        setTimeout(function () {
+            document.dispatchEvent(new CustomEvent('musicStateChanged', { detail: { playing: true } }));
+            document.dispatchEvent(new CustomEvent('musicConsentResolved'));
+        }, 80);
+        return;
+    } else if (audioParam === '0') {
+        setTimeout(function () {
+            document.dispatchEvent(new CustomEvent('musicStateChanged', { detail: { playing: false } }));
+            document.dispatchEvent(new CustomEvent('musicConsentResolved'));
+        }, 80);
+        return;
+    }
+
     // ─── Build Consent Popup ──────────────────────────────────
     const overlay = document.createElement('div');
     overlay.className = 'music-consent-overlay';

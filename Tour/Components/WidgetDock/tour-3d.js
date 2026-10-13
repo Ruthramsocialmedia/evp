@@ -183,6 +183,37 @@
             transform: rotate(360deg) scale(0.94);
         }
 
+        .tour3d-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .tour3d-ext-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(19, 19, 48, 0.05);
+            border: 1px solid rgba(19, 19, 48, 0.08);
+            color: #131330;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 180ms ease;
+            font-size: 13px;
+            outline: none !important;
+        }
+
+        .tour3d-ext-btn:hover {
+            background: #FFFBEB;
+            color: #d97706;
+            border-color: #FFB703;
+            transform: scale(1.06);
+        }
+
         /* Stage containing Treedis Iframe and Dock */
         .tour3d-stage {
             position: relative;
@@ -760,8 +791,23 @@
         closeBtn.innerHTML = '<i class="fi fi-rr-cross-small" aria-hidden="true"></i>';
         closeBtn.onclick = close3dTour;
 
+        // External Link Launcher (Open Portal in New Tab)
+        const extBtn = document.createElement("a");
+        extBtn.href = TREEDIS_URL;
+        extBtn.target = "_blank";
+        extBtn.rel = "noopener noreferrer";
+        extBtn.className = "tour3d-ext-btn";
+        extBtn.setAttribute("aria-label", "Open Specifications Portal in New Tab");
+        extBtn.title = "Open Portal in New Tab";
+        extBtn.innerHTML = '<i class="fi fi-rr-arrow-up-right-from-square" aria-hidden="true"></i>';
+
+        const actionsWrap = document.createElement("div");
+        actionsWrap.className = "tour3d-header-actions";
+        actionsWrap.appendChild(extBtn);
+        actionsWrap.appendChild(closeBtn);
+
         header.appendChild(titles);
-        header.appendChild(closeBtn);
+        header.appendChild(actionsWrap);
         box.appendChild(header);
 
         // 4. Stage (Iframe + Floating Viewpoint Dock)
@@ -796,7 +842,7 @@
         const dropdownHead = document.createElement("div");
         dropdownHead.className = "tour3d-dropdown-head";
         dropdownHead.innerHTML = `
-            <span class="tour3d-dropdown-title">3D View Options</span>
+            <span class="tour3d-dropdown-title">Portal Options</span>
             <span class="tour3d-dropdown-count">Live</span>
         `;
         dropdownMenu.appendChild(dropdownHead);
@@ -804,7 +850,7 @@
         const dropdownScroll = document.createElement("div");
         dropdownScroll.className = "tour3d-dropdown-scroll";
 
-        // Dropdown Option 1: Interactive 3D Twin (Active)
+        // Dropdown Option 1: Venue Specifications Portal (Active)
         const itemTwin = document.createElement("button");
         itemTwin.type = "button";
         itemTwin.className = "tour3d-dropdown-item is-selected";
@@ -815,8 +861,8 @@
                 <i class="fi fi-sr-cube" aria-hidden="true"></i>
             </div>
             <div class="tour3d-dropdown-item-info">
-                <span class="tour3d-dropdown-item-label">Interactive 3D Twin</span>
-                <span class="tour3d-dropdown-item-sub">Full Spatial Walkthrough</span>
+                <span class="tour3d-dropdown-item-label">Venue Specifications Portal</span>
+                <span class="tour3d-dropdown-item-sub">Official Structural &amp; Spatial Data</span>
             </div>
             <i class="fi fi-rr-check tour3d-dropdown-check" aria-hidden="true"></i>
         `;

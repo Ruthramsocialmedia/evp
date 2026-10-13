@@ -585,6 +585,33 @@
             text-transform: uppercase;
         }
 
+        /* ── Real-Time Camera Radar Cone (FOV) ── */
+        .evp-fp-radar-cone {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 84px;
+            height: 84px;
+            margin-top: -42px;
+            margin-left: -42px;
+            pointer-events: none;
+            z-index: 20;
+            opacity: 0;
+            visibility: hidden;
+            transform-origin: center center;
+            transition: opacity 260ms ease;
+        }
+        .evp-fp-pin.is-active .evp-fp-radar-cone {
+            opacity: 1;
+            visibility: visible;
+        }
+        .evp-fp-radar-svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+            filter: drop-shadow(0 0 6px rgba(255, 183, 3, 0.55));
+        }
+
         /* ── Clean White Glassmorphism Tooltip ── */
         .evp-fp-tooltip {
             position: absolute;
@@ -1020,6 +1047,21 @@
                             <span class="evp-fp-yah-text">You Are Here</span>
                         </div>
 
+                        <!-- Real-time Rotating Camera Radar FOV Cone -->
+                        <div class="evp-fp-radar-cone" id="fp-radar-${node.id}">
+                            <svg viewBox="0 0 100 100" class="evp-fp-radar-svg">
+                                <defs>
+                                    <radialGradient id="evp-radar-grad-${node.id}" cx="50%" cy="50%" r="50%">
+                                        <stop offset="0%" stop-color="#FFB703" stop-opacity="0.8" />
+                                        <stop offset="60%" stop-color="#FFB703" stop-opacity="0.32" />
+                                        <stop offset="100%" stop-color="#FFB703" stop-opacity="0" />
+                                    </radialGradient>
+                                </defs>
+                                <path d="M 50 50 L 15 5 A 50 50 0 0 1 85 5 Z" fill="url(#evp-radar-grad-${node.id})" />
+                                <line x1="50" y1="50" x2="50" y2="5" stroke="#FFB703" stroke-width="1.5" stroke-dasharray="2,2" opacity="0.85" />
+                            </svg>
+                        </div>
+
                         <!-- Pin Marker Dot -->
                         <div class="evp-fp-pin-dot">
                             ${getNodeSvgIcon(node.icon)}
@@ -1147,24 +1189,70 @@
         closeFloorPlan();
     }
 
+    // ── Live Camera Radar Cone Tracking Engine ───────────────────────────
+    let radarAnimTimer = null;
+
+    function getCameraYaw() {
+        try {
+            if (window.tour && typeof window.tour._getRootPlayer === "function") {
+                const rootPlayer = window.tour._getRootPlayer();
+                if (rootPlayer) {
+                    const viewer = rootPlayer.getMainViewer();
+                    if (viewer && typeof viewer.getPan === "function") {
+                        return viewer.getPan();
+                    }
+                }
+            }
+        } catch (e) {}
+        return 0;
+    }
+
+    function updateRadarConeOrientation() {
+        if (!isModalOpen) return;
+        const activeRadar = modal.querySelector(".evp-fp-pin.is-active .evp-fp-radar-cone");
+        if (!activeRadar) return;
+
+        const pan = getCameraYaw();
+        activeRadar.style.transform = `rotate(${pan}deg)`;
+    }
+
+    function startRadarTracking() {
+        if (radarAnimTimer) clearInterval(radarAnimTimer);
+        updateRadarConeOrientation();
+        radarAnimTimer = setInterval(updateRadarConeOrientation, 80);
+    }
+
+    function stopRadarTracking() {
+        if (radarAnimTimer) {
+            clearInterval(radarAnimTimer);
+            radarAnimTimer = null;
+        }
+    }
+
     // ── Open / Close State Controller ────────────────────────────────────
     function openFloorPlan() {
         isModalOpen = true;
         syncActiveLocationFromTour();
         backdrop.classList.add("is-visible");
         modal.classList.add("is-visible");
+        startRadarTracking();
 
         const btn = document.getElementById("btn-floorplan");
         if (btn) btn.classList.add("is-active");
+        const popBtn = document.getElementById("popover-btn-sitemap");
+        if (popBtn) popBtn.classList.add("is-active");
     }
 
     function closeFloorPlan() {
         isModalOpen = false;
+        stopRadarTracking();
         backdrop.classList.remove("is-visible");
         modal.classList.remove("is-visible");
 
         const btn = document.getElementById("btn-floorplan");
         if (btn) btn.classList.remove("is-active");
+        const popBtn = document.getElementById("popover-btn-sitemap");
+        if (popBtn) popBtn.classList.remove("is-active");
     }
 
     function toggleFloorPlan() {
@@ -1210,41 +1298,21 @@
         });
     });
 
-    // ── Top-Right HUD Action Button Integration ──────────────────────────
-    function createTopButton() {
-        const topActions = document.getElementById("pcis-top-actions");
-        if (!topActions) return;
-
-        let btn = document.getElementById("btn-floorplan");
-        if (!btn) {
-            btn = document.createElement("button");
-            btn.id = "btn-floorplan";
-            btn.className = "pcis-action-btn btn-floorplan";
-            btn.type = "button";
-            btn.setAttribute("aria-label", "Open Campus Site Map and Floor Plan");
-            btn.setAttribute("data-tooltip", "Site Map");
-
-            btn.innerHTML = `<i class="fi fi-sr-map" aria-hidden="true"></i>`;
-
-            btn.addEventListener("click", function (e) {
-                e.stopPropagation();
-                toggleFloorPlan();
-            });
-
-            // Insert before clean view eye button
-            const eyeBtn = document.getElementById("btn-clean-mode");
-            if (eyeBtn) {
-                topActions.insertBefore(btn, eyeBtn);
-            } else {
-                topActions.appendChild(btn);
-            }
-        }
+    // ── Remove Top-Right Action Button (Relocated to More Features) ──────
+    function removeTopButton() {
+        const btn = document.getElementById("btn-floorplan");
+        if (btn) btn.remove();
     }
+    removeTopButton();
+    setTimeout(removeTopButton, 400);
+    setTimeout(removeTopButton, 1200);
 
-    // Attempt mount
-    createTopButton();
-    setTimeout(createTopButton, 400);
-    setTimeout(createTopButton, 1200);
+    // Event listener from More Features menu or external triggers
+    document.addEventListener("menuItemClick", function (e) {
+        if (e.detail && (e.detail.id === "menu-floorplan" || e.detail.id === "popover-btn-sitemap")) {
+            toggleFloorPlan();
+        }
+    });
 
     // Tour media change listener for synchronization
     function onMediaChanged() {

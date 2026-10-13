@@ -731,7 +731,16 @@
                 </div>
             </button>
 
-            <!-- 2. Street View Modal (Preserved Legacy GSV Popup) -->
+            <!-- 2. Site Map (Interactive Campus Map & Live Radar Cone) -->
+            <button class="pcis-popover-item" id="popover-btn-sitemap" type="button" aria-label="Interactive Campus Site Map and Floor Plan">
+                <span class="pcis-popover-icon"><i class="fi fi-sr-map" aria-hidden="true"></i></span>
+                <div class="pcis-popover-text">
+                    <span class="pcis-popover-title">Site Map</span>
+                    <span class="pcis-popover-sub">Interactive 2D Map &amp; Radar Cone</span>
+                </div>
+            </button>
+
+            <!-- 3. Street View Modal (Preserved Legacy GSV Popup) -->
             <button class="pcis-popover-item" id="popover-btn-street-legacy" type="button" aria-label="Open Google Street View standalone modal">
                 <span class="pcis-popover-icon"><i class="fi fi-sr-street-view" aria-hidden="true"></i></span>
                 <div class="pcis-popover-text">
@@ -1047,6 +1056,7 @@
     const hallsPopover = document.getElementById("pcis-halls-popover");
     const explorePopover = document.getElementById("pcis-explore-popover");
     const popExplore = document.getElementById("popover-btn-explore");
+    const popSiteMap = document.getElementById("popover-btn-sitemap");
     const legacyStreetBtn = document.getElementById("popover-btn-street-legacy");
     const popDirections = document.getElementById("popover-btn-directions");
     const popSocial = document.getElementById("popover-btn-social");
@@ -1664,6 +1674,21 @@
                 window.togglePanoList();
             } else {
                 document.dispatchEvent(new CustomEvent("menuItemClick", { detail: { id: "menu-panorama" } }));
+            }
+        });
+    }
+
+    // ─── Popover Item: Site Map ─────────────────────────────────
+    if (popSiteMap) {
+        popSiteMap.addEventListener("click", function (e) {
+            e.stopPropagation();
+            closePopover();
+            if (typeof window.toggleFloorPlan === "function") {
+                window.toggleFloorPlan();
+            } else if (typeof window.openFloorPlan === "function") {
+                window.openFloorPlan();
+            } else {
+                document.dispatchEvent(new CustomEvent("menuItemClick", { detail: { id: "menu-floorplan" } }));
             }
         });
     }

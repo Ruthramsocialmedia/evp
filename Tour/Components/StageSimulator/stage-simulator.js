@@ -16,32 +16,54 @@
         minDepthFt: 40,                // Minimum stage depth (Standard Baseline)
         maxDepthFt: 60,                // Maximum stage depth
         defaultDepthFt: 40,            // Standard convention baseline depth
-        stepDepthFt: 2,
-        hallNetAreaSqFt: 47160,        // Net usable column-free hall space (144 ft x 376 ft)
+        stepDepthFt: 10,               // 3 Discrete Stops: 40 ft, 50 ft, 60 ft
         safetyBufferDepthFt: 10,       // 10 ft front/side safety clearance buffer (800 sq. ft)
         sqFtToSqM: 0.092903,
-        // Standard capacities at baseline 40 ft depth (3,200 sq. ft stage + 800 sq. ft safety buffer)
-        baselines: {
-            theatre: {
-                name: "Theatre Layout",
-                icon: "fi-rr-chair",
-                baselineSeats: 2250,
-                sqFtPerSeat: 19.182,   // Net seating floor density with aisles
-                badge: "Plenary / Keynote"
+        // Certified hall specifications & baseline capacities at 40 ft stage depth
+        halls: {
+            "A": {
+                name: "Hall A",
+                grossDimensions: "376 ft × 144 ft",
+                netAreaSqFt: 47160,
+                theatre: 2250,
+                classroom: 1120,
+                cabaret: 850,
+                sqFtTheatre: 19.182,
+                sqFtClassroom: 38.535,
+                sqFtCabaret: 50.776
             },
-            classroom: {
-                name: "Classroom Layout",
-                icon: "fi-rr-screen",
-                baselineSeats: 1120,
-                sqFtPerSeat: 38.535,   // Net seating floor density with continuous tables
-                badge: "Training / Seminar"
+            "B": {
+                name: "Hall B",
+                grossDimensions: "376 ft × 144 ft",
+                netAreaSqFt: 47160,
+                theatre: 2250,
+                classroom: 1120,
+                cabaret: 850,
+                sqFtTheatre: 19.182,
+                sqFtClassroom: 38.535,
+                sqFtCabaret: 50.776
             },
-            cabaret: {
-                name: "Cabaret / Banquet Layout",
-                icon: "fi-rr-restaurant",
-                baselineSeats: 850,
-                sqFtPerSeat: 50.776,   // Net seating floor density with 60\" rounds & aisles
-                badge: "Gala / Dining"
+            "C": {
+                name: "Hall C",
+                grossDimensions: "376 ft × 144 ft",
+                netAreaSqFt: 47160,
+                theatre: 2250,
+                classroom: 1120,
+                cabaret: 850,
+                sqFtTheatre: 19.182,
+                sqFtClassroom: 38.535,
+                sqFtCabaret: 50.776
+            },
+            "D": {
+                name: "Hall D",
+                grossDimensions: "316 ft × 150 ft",
+                netAreaSqFt: 43428,
+                theatre: 1800,
+                classroom: 900,
+                cabaret: 765,
+                sqFtTheatre: 21.714,
+                sqFtClassroom: 43.428,
+                sqFtCabaret: 51.091
             }
         },
         presets: [
@@ -51,6 +73,7 @@
         ]
     };
 
+    let selectedHallLetter = "A";
     let currentDepth = HALL_CONFIG.defaultDepthFt;
     let isSimulatorOpen = false;
 
@@ -199,6 +222,36 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
+        }
+        .stage-sim-hall-tabs {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(19, 19, 48, 0.05);
+            border: 1px solid rgba(19, 19, 48, 0.08);
+            border-radius: 9px;
+            padding: 2px;
+            gap: 2px;
+        }
+        .stage-sim-hall-tab {
+            padding: 2.5px 8px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #5c5c7a;
+            background: transparent;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all 160ms ease;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            letter-spacing: 0.2px;
+        }
+        .stage-sim-hall-tab:hover {
+            color: #131330;
+        }
+        .stage-sim-hall-tab.is-active {
+            background: #ffffff;
+            color: #d97706;
+            box-shadow: 0 1px 4px rgba(19, 19, 48, 0.1);
         }
         .stage-sim-tag {
             color: #5c5c7a;
@@ -598,14 +651,111 @@
         .stage-sim-footer {
             padding: 12px 18px;
             background: rgba(248, 249, 252, 0.98);
-            border-top: none !important;
+            border-top: 1px solid rgba(19, 19, 48, 0.05);
             box-shadow: 0 -2px 10px rgba(19, 19, 48, 0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-size: 11px;
+            color: #5c5c7a;
+        }
+        .stage-sim-actions-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+        .stage-sim-btn-wa {
+            flex: 1.1;
+            background: #25D366;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            transition: all 180ms ease;
+            box-shadow: 0 2px 8px rgba(37, 211, 102, 0.28);
+            outline: none !important;
+            text-decoration: none;
+            font-family: 'Satoshi', sans-serif !important;
+        }
+        .stage-sim-btn-wa:hover {
+            background: #20BA5A;
+            box-shadow: 0 4px 14px rgba(37, 211, 102, 0.42);
+            transform: translateY(-1px);
+        }
+        .stage-sim-btn-wa i {
+            font-size: 14px;
+        }
+        .stage-sim-btn-export {
+            flex: 0.9;
+            background: #131330;
+            color: #FFFFFF;
+            border: 1px solid rgba(255, 183, 3, 0.4);
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            transition: all 180ms ease;
+            box-shadow: 0 2px 8px rgba(19, 19, 48, 0.15);
+            outline: none !important;
+            font-family: 'Satoshi', sans-serif !important;
+        }
+        .stage-sim-btn-export:hover {
+            background: #1C1C46;
+            border-color: #FFB703;
+            color: #FFB703;
+            box-shadow: 0 4px 14px rgba(19, 19, 48, 0.25);
+            transform: translateY(-1px);
+        }
+        .stage-sim-btn-export i {
+            font-size: 13px;
+        }
+        .stage-sim-btn-blueprint {
+            flex: 1;
+            background: rgba(255, 183, 3, 0.12);
+            color: #d97706;
+            border: 1px solid rgba(255, 183, 3, 0.5);
+            border-radius: 10px;
+            padding: 8px 10px;
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 180ms ease;
+            box-shadow: 0 2px 8px rgba(255, 183, 3, 0.12);
+            outline: none !important;
+            font-family: 'Satoshi', sans-serif !important;
+        }
+        .stage-sim-btn-blueprint:hover {
+            background: #FFB703;
+            color: #070e1b;
+            box-shadow: 0 4px 14px rgba(255, 183, 3, 0.35);
+            transform: translateY(-1px);
+        }
+        .stage-sim-btn-blueprint i {
+            font-size: 13px;
+        }
+        .stage-sim-footer-meta {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 12px;
-            font-size: 11px;
-            color: #5c5c7a;
+            width: 100%;
         }
         .stage-sim-disclaimer {
             display: flex;
@@ -778,9 +928,8 @@
             }
             .stage-sim-footer {
                 padding: 10px 16px max(14px, env(safe-area-inset-bottom)) !important;
-                flex-direction: row !important;
-                align-items: center !important;
-                justify-content: space-between !important;
+                flex-direction: column !important;
+                align-items: stretch !important;
                 gap: 8px !important;
             }
             .stage-sim-disclaimer {
@@ -887,10 +1036,13 @@
         <div class="stage-sim-header">
             <div class="stage-sim-header-info">
                 <div class="stage-sim-badge-row">
-                    <span class="stage-sim-hall-pill" id="sim-hall-indicator">
-                        <i class="fi fi-sr-apps"></i> HALL A
-                    </span>
-                    <span class="stage-sim-tag">Acoustic &amp; Capacity Modeler</span>
+                    <div class="stage-sim-hall-tabs" id="sim-hall-tabs">
+                        <button type="button" class="stage-sim-hall-tab is-active" data-hall="A">Hall A</button>
+                        <button type="button" class="stage-sim-hall-tab" data-hall="B">Hall B</button>
+                        <button type="button" class="stage-sim-hall-tab" data-hall="C">Hall C</button>
+                        <button type="button" class="stage-sim-hall-tab" data-hall="D">Hall D</button>
+                    </div>
+                    <span class="stage-sim-tag" id="sim-hall-dims-tag">376 × 144 ft</span>
                 </div>
                 <h2 class="stage-sim-title">Stage Size &amp; Seating Simulator</h2>
                 <p class="stage-sim-subtitle">Simulate real-time seating capacities based on custom stage depth</p>
@@ -923,7 +1075,7 @@
                 <div class="sim-metric-cell">
                     <span class="sim-metric-label">Floor Share</span>
                     <span class="sim-metric-val gold" id="sim-metric-coverage">6.8%</span>
-                    <span class="sim-metric-sub">of 47,160 sq.ft</span>
+                    <span class="sim-metric-sub" id="sim-metric-coverage-sub">of 47,160 sq.ft</span>
                 </div>
             </div>
 
@@ -934,7 +1086,7 @@
                         <span class="stage-slider-label">
                             <i class="fi fi-rr-settings-sliders" style="color:#FFB703;"></i> Adjust Stage Depth
                         </span>
-                        <span class="stage-slider-hint">Scale stage projection from 40 ft to 60 ft</span>
+                        <span class="stage-slider-hint">3 Stage Modes: 40 ft, 50 ft, or 60 ft</span>
                     </div>
                     <div class="stage-slider-readout">
                         <span id="sim-slider-val">40</span> <small>FT DEPTH</small>
@@ -1025,13 +1177,29 @@
 
         <!-- Footer -->
         <div class="stage-sim-footer">
-            <div class="stage-sim-disclaimer">
-                <i class="fi fi-sr-shield-check"></i>
-                <span>Planning estimate (varies by aisle &amp; AV setup).</span>
+            <div class="stage-sim-actions-row">
+                <button type="button" class="stage-sim-btn-blueprint" id="stage-sim-btn-blueprint" aria-label="Open 2D Seating Layout Blueprint">
+                    <i class="fi fi-rr-blueprint" aria-hidden="true"></i>
+                    <span>2D Blueprint</span>
+                </button>
+                <button type="button" class="stage-sim-btn-wa" id="stage-sim-btn-wa" aria-label="Inquire via WhatsApp">
+                    <i class="fi fi-brands-whatsapp" aria-hidden="true"></i>
+                    <span>WhatsApp</span>
+                </button>
+                <button type="button" class="stage-sim-btn-export" id="stage-sim-btn-export" aria-label="Save or print event spec sheet">
+                    <i class="fi fi-rr-document-signed" aria-hidden="true"></i>
+                    <span>Spec Sheet</span>
+                </button>
             </div>
-            <button type="button" class="stage-sim-reset-btn" id="stage-sim-reset-btn">
-                Reset to 40 ft
-            </button>
+            <div class="stage-sim-footer-meta">
+                <div class="stage-sim-disclaimer">
+                    <i class="fi fi-sr-shield-check"></i>
+                    <span>Planning estimate (varies by aisle &amp; AV setup).</span>
+                </div>
+                <button type="button" class="stage-sim-reset-btn" id="stage-sim-reset-btn">
+                    Reset to 40 ft
+                </button>
+            </div>
         </div>
     `;
 
@@ -1039,6 +1207,9 @@
     document.body.appendChild(popup);
 
     // ── Cache DOM Elements ───────────────────────────────────────────────
+    const btnBlueprint = document.getElementById("stage-sim-btn-blueprint");
+    const btnWa = document.getElementById("stage-sim-btn-wa");
+    const btnExport = document.getElementById("stage-sim-btn-export");
     const rangeInput = document.getElementById("stage-depth-range");
     const sliderValEl = document.getElementById("sim-slider-val");
     const metricDepthEl = document.getElementById("sim-metric-depth");
@@ -1046,7 +1217,9 @@
     const metricAreaEl = document.getElementById("sim-metric-area");
     const metricAreaMEl = document.getElementById("sim-metric-area-m");
     const metricCoverageEl = document.getElementById("sim-metric-coverage");
-    const hallIndicatorEl = document.getElementById("sim-hall-indicator");
+    const metricCoverageSubEl = document.getElementById("sim-metric-coverage-sub");
+    const hallDimsTagEl = document.getElementById("sim-hall-dims-tag");
+    const hallTabs = popup.querySelectorAll(".stage-sim-hall-tab");
     const closeBtn = document.getElementById("stage-sim-close-btn");
     const resetBtn = document.getElementById("stage-sim-reset-btn");
     const presetBtns = popup.querySelectorAll(".stage-preset-btn");
@@ -1058,9 +1231,20 @@
     const valCabaretEl = document.getElementById("val-cabaret");
     const deltaCabaretEl = document.getElementById("delta-cabaret");
 
+    // Wire hall switcher tab clicks
+    hallTabs.forEach(tab => {
+        tab.addEventListener("click", function () {
+            selectedHallLetter = this.getAttribute("data-hall") || "A";
+            hallTabs.forEach(t => t.classList.toggle("is-active", t.getAttribute("data-hall") === selectedHallLetter));
+            updateSimulatorCalculations(currentDepth);
+        });
+    });
+
     // ── Dynamic Recalculation Engine ─────────────────────────────────────
     function updateSimulatorCalculations(depth) {
         currentDepth = Number(depth);
+
+        const hall = HALL_CONFIG.halls[selectedHallLetter] || HALL_CONFIG.halls["A"];
 
         // Update range & readout
         rangeInput.value = currentDepth;
@@ -1070,13 +1254,19 @@
         const stageAreaSqFt = HALL_CONFIG.masterWidthFt * currentDepth;
         const stageAreaSqM = Math.round(stageAreaSqFt * HALL_CONFIG.sqFtToSqM);
         const depthM = (currentDepth * 0.3048).toFixed(1);
-        const coveragePct = ((stageAreaSqFt / HALL_CONFIG.hallNetAreaSqFt) * 100).toFixed(1);
+        const coveragePct = ((stageAreaSqFt / hall.netAreaSqFt) * 100).toFixed(1);
 
         metricDepthEl.textContent = `${currentDepth} ft`;
         metricDepthMEl.textContent = `${depthM} m`;
         metricAreaEl.textContent = `${stageAreaSqFt.toLocaleString()} sq.ft`;
         metricAreaMEl.textContent = `${stageAreaSqM} m²`;
         metricCoverageEl.textContent = `${coveragePct}%`;
+        if (metricCoverageSubEl) {
+            metricCoverageSubEl.textContent = `of ${hall.netAreaSqFt.toLocaleString()} sq.ft`;
+        }
+        if (hallDimsTagEl) {
+            hallDimsTagEl.textContent = hall.grossDimensions;
+        }
 
         // Update slider track fill
         const pct = ((currentDepth - HALL_CONFIG.minDepthFt) / (HALL_CONFIG.maxDepthFt - HALL_CONFIG.minDepthFt)) * 100;
@@ -1092,18 +1282,18 @@
         const areaDeltaSqFt = (HALL_CONFIG.masterWidthFt * HALL_CONFIG.defaultDepthFt) - (HALL_CONFIG.masterWidthFt * currentDepth);
 
         // 1. Theatre
-        const theatreDelta = Math.round(areaDeltaSqFt / HALL_CONFIG.baselines.theatre.sqFtPerSeat);
-        const theatreSeats = HALL_CONFIG.baselines.theatre.baselineSeats + theatreDelta;
+        const theatreDelta = Math.round(areaDeltaSqFt / hall.sqFtTheatre);
+        const theatreSeats = hall.theatre + theatreDelta;
         renderCapacityRow(valTheatreEl, deltaTheatreEl, theatreSeats, theatreDelta);
 
         // 2. Classroom
-        const classroomDelta = Math.round(areaDeltaSqFt / HALL_CONFIG.baselines.classroom.sqFtPerSeat);
-        const classroomSeats = HALL_CONFIG.baselines.classroom.baselineSeats + classroomDelta;
+        const classroomDelta = Math.round(areaDeltaSqFt / hall.sqFtClassroom);
+        const classroomSeats = hall.classroom + classroomDelta;
         renderCapacityRow(valClassroomEl, deltaClassroomEl, classroomSeats, classroomDelta);
 
         // 3. Cabaret
-        const cabaretDelta = Math.round(areaDeltaSqFt / HALL_CONFIG.baselines.cabaret.sqFtPerSeat);
-        const cabaretSeats = HALL_CONFIG.baselines.cabaret.baselineSeats + cabaretDelta;
+        const cabaretDelta = Math.round(areaDeltaSqFt / hall.sqFtCabaret);
+        const cabaretSeats = hall.cabaret + cabaretDelta;
         renderCapacityRow(valCabaretEl, deltaCabaretEl, cabaretSeats, cabaretDelta);
     }
 
@@ -1159,8 +1349,8 @@
             return;
         }
 
-        const hallLetter = getActiveHallLetter();
-        hallIndicatorEl.innerHTML = `<i class="fi fi-sr-apps"></i> HALL ${hallLetter}`;
+        selectedHallLetter = getActiveHallLetter();
+        hallTabs.forEach(t => t.classList.toggle("is-active", t.getAttribute("data-hall") === selectedHallLetter));
         updateSimulatorCalculations(currentDepth);
 
         popup.style.transform = "";
@@ -1204,6 +1394,465 @@
             updateSimulatorCalculations(depth);
         });
     });
+
+    // ── Export to WhatsApp (Commercial Proposal Request) ────────────────
+    function exportToWhatsApp() {
+        const hall = HALL_CONFIG.halls[selectedHallLetter] || HALL_CONFIG.halls["A"];
+        const stageAreaSqFt = HALL_CONFIG.masterWidthFt * currentDepth;
+        const stageAreaSqM = Math.round(stageAreaSqFt * HALL_CONFIG.sqFtToSqM);
+        const coveragePct = ((stageAreaSqFt / hall.netAreaSqFt) * 100).toFixed(1);
+        const rigging = selectedHallLetter === "D" ? "231 Points (1T Rated)" : "252 Points (1T Rated)";
+        const theatreCount = valTheatreEl ? valTheatreEl.textContent.trim() : "~2,250";
+        const theatreDelta = deltaTheatreEl ? deltaTheatreEl.textContent.trim() : "±0 Baseline";
+        const classroomCount = valClassroomEl ? valClassroomEl.textContent.trim() : "~1,120";
+        const classroomDelta = deltaClassroomEl ? deltaClassroomEl.textContent.trim() : "±0 Baseline";
+        const cabaretCount = valCabaretEl ? valCabaretEl.textContent.trim() : "~850";
+        const cabaretDelta = deltaCabaretEl ? deltaCabaretEl.textContent.trim() : "±0 Baseline";
+
+        const msg = [
+            "*EVP TRADE & CONVENTION CENTRE — EVENT SPECIFICATION INQUIRY*",
+            "--------------------------------------------------",
+            `*Venue:* ${hall.name} (${hall.grossDimensions})`,
+            `*Total Hall Area:* ${hall.netAreaSqFt.toLocaleString()} sq.ft`,
+            `*Stage Dimensions:* ${HALL_CONFIG.masterWidthFt} ft (W) × ${currentDepth} ft (D)`,
+            `*Stage Area:* ${stageAreaSqFt.toLocaleString()} sq.ft (${stageAreaSqM} m²)`,
+            `*Floor Share:* ${coveragePct}% of net hall floor`,
+            "",
+            "*ESTIMATED CAPACITIES:*",
+            `• Theatre Style: ${theatreCount} (${theatreDelta})`,
+            `• Classroom Style: ${classroomCount} (${classroomDelta})`,
+            `• Cabaret Style: ${cabaretCount} (${cabaretDelta})`,
+            "",
+            "*CERTIFIED ENGINEERING SPECS:*",
+            "• Clear Ceiling Height: 15 metres (49.2 ft)",
+            "• Floor Load Bearing: 5 T/m²",
+            `• Overhead Rigging: ${rigging}`,
+            "• Climate Control: 300 TR Precision HVAC",
+            "",
+            "Please share availability, commercial proposal, and technical clearance for this configuration.",
+            "--------------------------------------------------",
+            "EVP Trade & Convention Centre, Poonamallee, Chennai",
+            "Tel: +91 85258 11111 | Web: evptradecentre.com"
+        ].join("\n");
+
+        const waUrl = "https://wa.me/918525811111?text=" + encodeURIComponent(msg);
+        window.open(waUrl, "_blank", "noopener,noreferrer");
+    }
+
+    // ── Export to Printable PDF Spec Sheet ──────────────────────────────
+    function exportToPrintablePDF() {
+        const hall = HALL_CONFIG.halls[selectedHallLetter] || HALL_CONFIG.halls["A"];
+        const stageAreaSqFt = HALL_CONFIG.masterWidthFt * currentDepth;
+        const stageAreaSqM = Math.round(stageAreaSqFt * HALL_CONFIG.sqFtToSqM);
+        const depthM = (currentDepth * 0.3048).toFixed(1);
+        const coveragePct = ((stageAreaSqFt / hall.netAreaSqFt) * 100).toFixed(1);
+        const rigging = selectedHallLetter === "D" ? "231 Points (1T Capacity each)" : "252 Points (1T Capacity each)";
+        const theatreCount = valTheatreEl ? valTheatreEl.textContent.trim() : "~2,250";
+        const theatreDelta = deltaTheatreEl ? deltaTheatreEl.textContent.trim() : "±0 Baseline";
+        const classroomCount = valClassroomEl ? valClassroomEl.textContent.trim() : "~1,120";
+        const classroomDelta = deltaClassroomEl ? deltaClassroomEl.textContent.trim() : "±0 Baseline";
+        const cabaretCount = valCabaretEl ? valCabaretEl.textContent.trim() : "~850";
+        const cabaretDelta = deltaCabaretEl ? deltaCabaretEl.textContent.trim() : "±0 Baseline";
+
+        const now = new Date();
+        const dateFormatted = now.toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        });
+        const refCode = `EVP-SPEC-${selectedHallLetter}-${currentDepth}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
+
+        const printHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EVP Event Spec Sheet — ${hall.name} (${currentDepth}ft Stage)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-style: normal !important;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #f8fafc;
+            color: #0f172a;
+            line-height: 1.5;
+            padding: 24px;
+        }
+        .page-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+            padding: 36px 40px;
+        }
+        .print-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .print-btn {
+            background: linear-gradient(135deg, #FFB703 0%, #FB8500 100%);
+            color: #0b0f19;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(251, 133, 0, 0.25);
+            transition: all 0.2s ease;
+        }
+        .print-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(251, 133, 0, 0.35);
+        }
+        .close-hint {
+            font-size: 12px;
+            color: #64748b;
+        }
+        .brand-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding-bottom: 24px;
+            border-bottom: 2px solid #0f172a;
+            margin-bottom: 28px;
+        }
+        .brand-logo-col h1 {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: #0f172a;
+            text-transform: uppercase;
+        }
+        .brand-logo-col p {
+            font-size: 12px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #d97706;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+        .brand-contact-col {
+            text-align: right;
+            font-size: 11px;
+            color: #475569;
+            line-height: 1.6;
+        }
+        .brand-contact-col b {
+            color: #0f172a;
+        }
+        .doc-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 20px;
+        }
+        .doc-title-row h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .doc-ref-badge {
+            font-size: 11px;
+            font-family: monospace;
+            background: #f1f5f9;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #475569;
+            font-weight: 600;
+        }
+        .section-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+        }
+        .section-header {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #d97706;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+        .spec-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .spec-label {
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .spec-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .spec-value.highlight {
+            color: #d97706;
+        }
+        .table-wrap {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+        }
+        th {
+            background: #f1f5f9;
+            color: #334155;
+            font-weight: 700;
+            padding: 10px 14px;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        td {
+            padding: 11px 14px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #0f172a;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .seat-count {
+            font-size: 14px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .delta-neutral {
+            color: #64748b;
+            font-weight: 600;
+        }
+        .delta-positive {
+            color: #059669;
+            font-weight: 600;
+        }
+        .delta-negative {
+            color: #dc2626;
+            font-weight: 600;
+        }
+        .footer-note {
+            margin-top: 28px;
+            padding-top: 16px;
+            border-top: 1px dashed #cbd5e1;
+            font-size: 11px;
+            color: #64748b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer-note span {
+            display: block;
+        }
+        @media print {
+            body {
+                background: #ffffff !important;
+                padding: 0 !important;
+            }
+            .page-container {
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+                max-width: 100% !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            @page {
+                size: A4 portrait;
+                margin: 15mm;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="print-bar no-print">
+            <button class="print-btn" onclick="window.print()">Print / Save PDF</button>
+            <span class="close-hint">Tip: Select &quot;Save as PDF&quot; destination in print dialog</span>
+        </div>
+
+        <div class="brand-header">
+            <div class="brand-logo-col">
+                <h1>EVP Trade Centre</h1>
+                <p>Convention &amp; Exhibition Centre</p>
+            </div>
+            <div class="brand-contact-col">
+                <b>Venue &amp; Sales Office</b><br>
+                Chennai-Bangalore Highway, Poonamallee<br>
+                Chennai, Tamil Nadu 600056<br>
+                Tel: +91 85258 11111 | Email: info@evptradecentre.com<br>
+                Web: www.evptradecentre.com
+            </div>
+        </div>
+
+        <div class="doc-title-row">
+            <h2>Technical Event Specification Sheet</h2>
+            <div class="doc-ref-badge">${refCode} | ${dateFormatted}</div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-header">1. Hall &amp; Stage Footprint</div>
+            <div class="grid-2">
+                <div class="spec-item">
+                    <span class="spec-label">Selected Venue</span>
+                    <span class="spec-value">${hall.name} (${hall.grossDimensions})</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Net Exhibition Area</span>
+                    <span class="spec-value">${hall.netAreaSqFt.toLocaleString()} sq.ft (${Math.round(hall.netAreaSqFt * HALL_CONFIG.sqFtToSqM).toLocaleString()} m²)</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Stage Width &times; Depth</span>
+                    <span class="spec-value highlight">${HALL_CONFIG.masterWidthFt} ft &times; ${currentDepth} ft (${HALL_CONFIG.masterWidthM}m &times; ${depthM}m)</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Stage Area &amp; Hall Share</span>
+                    <span class="spec-value highlight">${stageAreaSqFt.toLocaleString()} sq.ft (${stageAreaSqM} m²) &bull; ${coveragePct}% Coverage</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Seating Style</th>
+                        <th>Standard Capacity (40 ft Stage)</th>
+                        <th>Simulated Capacity (${currentDepth} ft Stage)</th>
+                        <th>Capacity Variance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>Theatre Style</b><br><span style="color:#64748b; font-size:11px;">Auditorium keynote arrangement</span></td>
+                        <td>${hall.theatre.toLocaleString()} seats</td>
+                        <td class="seat-count">${theatreCount}</td>
+                        <td>${theatreDelta}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Classroom Style</b><br><span style="color:#64748b; font-size:11px;">Conference tables with seating</span></td>
+                        <td>${hall.classroom.toLocaleString()} seats</td>
+                        <td class="seat-count">${classroomCount}</td>
+                        <td>${classroomDelta}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Cabaret Style</b><br><span style="color:#64748b; font-size:11px;">Banquet round tables facing stage</span></td>
+                        <td>${hall.cabaret.toLocaleString()} seats</td>
+                        <td class="seat-count">${cabaretCount}</td>
+                        <td>${cabaretDelta}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section-card">
+            <div class="section-header">2. Certified Engineering Specifications</div>
+            <div class="grid-3">
+                <div class="spec-item">
+                    <span class="spec-label">Clear Ceiling Height</span>
+                    <span class="spec-value">15 Metres (49.2 ft)</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Floor Load Bearing</span>
+                    <span class="spec-value">5 T/m² (Heavy Industrial)</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Overhead Rigging</span>
+                    <span class="spec-value">${rigging}</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Air Conditioning</span>
+                    <span class="spec-value">300 TR Precision HVAC</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Substation Power</span>
+                    <span class="spec-value">11kV HT + 100% DG Backup</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Production Amenities</span>
+                    <span class="spec-value">Green Rooms &amp; Loading Docks</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            <span>Generated via EVP Virtual Tour &bull; Stage &amp; Seating Simulation System</span>
+            <span>Subject to final technical rider approval &bull; EVP Trade Centre</span>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                window.print();
+            }, 350);
+        });
+    <\/script>
+</body>
+</html>`;
+
+        const printWin = window.open("", "_blank", "width=850,height=1000");
+        if (printWin) {
+            printWin.document.open();
+            printWin.document.write(printHtml);
+            printWin.document.close();
+        } else {
+            alert("Please allow popups to save or print the EVP Event Specification Sheet.");
+        }
+    }
+
+    if (btnBlueprint) {
+        btnBlueprint.addEventListener("click", function () {
+            closeSimulator();
+            if (window.evpLayoutGenerator && typeof window.evpLayoutGenerator.open === "function") {
+                window.evpLayoutGenerator.setHall(selectedHallLetter);
+                window.evpLayoutGenerator.setDepth(currentDepth);
+                window.evpLayoutGenerator.open();
+            }
+        });
+    }
+
+    if (btnWa) {
+        btnWa.addEventListener("click", exportToWhatsApp);
+    }
+    if (btnExport) {
+        btnExport.addEventListener("click", exportToPrintablePDF);
+    }
 
     closeBtn.addEventListener("click", closeSimulator);
     resetBtn.addEventListener("click", function () {

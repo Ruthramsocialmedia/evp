@@ -1250,6 +1250,7 @@
     document.body.appendChild(root);
 
     const widget = document.getElementById("pcis-location-widget");
+    document.dispatchEvent(new CustomEvent("panolistMounted", { detail: { widget: widget, root: root } }));
     const locationCopy = document.getElementById("pcis-location-copy");
     const prevBtn = document.getElementById("pcis-stepper-prev");
     const nextBtn = document.getElementById("pcis-stepper-next");

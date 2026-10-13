@@ -1105,6 +1105,9 @@
     // Periodic safety sync (keeps stepper strictly accurate)
     setInterval(updateStepperUI, 2500);
 
+    // Listen for Panolist DOM mount event for immediate attachment
+    document.addEventListener("panolistMounted", initStepper);
+
     // Initial mount
     initStepper();
 
