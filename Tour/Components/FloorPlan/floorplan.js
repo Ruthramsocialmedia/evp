@@ -1129,6 +1129,7 @@
             display: inline-flex;
             align-items: center;
             gap: 3px;
+            white-space: nowrap;
         }
         .evp-fp-dir-metric i {
             color: #FFB703;
@@ -1404,6 +1405,93 @@
                 font-size: 10.5px !important;
                 padding: 5px 8px !important;
                 text-align: center !important;
+            }
+
+            /* ── Mobile Directions Route HUD (Compact Card Layout) ── */
+            .evp-fp-dir-hud {
+                bottom: 8px !important;
+                left: 50% !important;
+                transform: translateX(-50%) translateY(24px) !important;
+                width: calc(100% - 14px) !important;
+                max-width: 440px !important;
+                box-sizing: border-box !important;
+                padding: 10px 12px 10px 12px !important;
+                border-radius: 14px !important;
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 7px !important;
+            }
+            .evp-fp-dir-hud.is-visible {
+                transform: translateX(-50%) translateY(0) !important;
+            }
+            .evp-fp-dir-left {
+                width: 100% !important;
+                gap: 4px !important;
+            }
+            .evp-fp-dir-top-row {
+                display: flex !important;
+                align-items: center !important;
+                gap: 6px !important;
+                flex-wrap: nowrap !important;
+                padding-right: 36px !important;
+            }
+            .evp-fp-dir-badge {
+                font-size: 8.5px !important;
+                padding: 1px 5px !important;
+                flex-shrink: 0 !important;
+                white-space: nowrap !important;
+            }
+            .evp-fp-dir-metrics {
+                display: inline-flex !important;
+                align-items: center !important;
+                gap: 5px !important;
+                font-size: 10.5px !important;
+                white-space: nowrap !important;
+                flex-shrink: 0 !important;
+            }
+            .evp-fp-dir-metric {
+                display: inline-flex !important;
+                align-items: center !important;
+                gap: 3px !important;
+                white-space: nowrap !important;
+                line-height: 1 !important;
+            }
+            .evp-fp-dir-dot {
+                font-size: 7px !important;
+            }
+            .evp-fp-dir-endpoints {
+                font-size: 12px !important;
+                gap: 5px !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                padding-right: 36px !important;
+            }
+            .evp-fp-dir-actions {
+                width: 100% !important;
+                display: flex !important;
+                gap: 6px !important;
+                margin-top: 1px !important;
+            }
+            .evp-fp-btn-explore {
+                flex: 1 1 auto !important;
+                width: 100% !important;
+                justify-content: center !important;
+                padding: 8px 12px !important;
+                font-size: 12px !important;
+                border-radius: 9px !important;
+                height: 34px !important;
+                box-sizing: border-box !important;
+            }
+            .evp-fp-btn-clear {
+                position: absolute !important;
+                top: 8px !important;
+                right: 9px !important;
+                width: 30px !important;
+                height: 30px !important;
+                min-width: 30px !important;
+                margin: 0 !important;
+                z-index: 10 !important;
             }
         }
         @media (max-height: 500px) {
