@@ -24,9 +24,9 @@
                 widthFt: 144,
                 lengthFt: 376,
                 netAreaSqFt: 47160,
-                baseTheatre: 2500,
-                baseClassroom: 1250,
-                baseCabaret: 990,
+                baseTheatre: 2250,
+                baseClassroom: 1120,
+                baseCabaret: 850,
                 fireExits: 6,
                 rollingShutters: 2,
                 riggingPoints: 252
@@ -37,9 +37,9 @@
                 widthFt: 144,
                 lengthFt: 376,
                 netAreaSqFt: 47160,
-                baseTheatre: 2500,
-                baseClassroom: 1250,
-                baseCabaret: 990,
+                baseTheatre: 2250,
+                baseClassroom: 1120,
+                baseCabaret: 850,
                 fireExits: 6,
                 rollingShutters: 2,
                 riggingPoints: 252
@@ -50,9 +50,9 @@
                 widthFt: 144,
                 lengthFt: 376,
                 netAreaSqFt: 47160,
-                baseTheatre: 2500,
-                baseClassroom: 1250,
-                baseCabaret: 990,
+                baseTheatre: 2250,
+                baseClassroom: 1120,
+                baseCabaret: 850,
                 fireExits: 7,
                 rollingShutters: 2,
                 riggingPoints: 252
@@ -63,8 +63,8 @@
                 widthFt: 150,
                 lengthFt: 316,
                 netAreaSqFt: 43428,
-                baseTheatre: 1900,
-                baseClassroom: 950,
+                baseTheatre: 1800,
+                baseClassroom: 900,
                 baseCabaret: 765,
                 fireExits: 6,
                 rollingShutters: 2,
@@ -365,6 +365,199 @@
             height: auto;
             border-radius: 8px;
             background: #070E1B;
+            cursor: zoom-in;
+            transition: transform 180ms ease, box-shadow 180ms ease;
+        }
+
+        /* ── Expand Fullscreen Button in Canvas Frame ── */
+        .layout-gen-expand-btn {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            background: rgba(7, 14, 27, 0.85);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 183, 3, 0.5);
+            border-radius: 8px;
+            color: #FFB703;
+            font-size: 11px;
+            font-weight: 700;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+            user-select: none;
+        }
+        .layout-gen-expand-btn:hover {
+            background: #FFB703;
+            color: #131330;
+            border-color: #FFB703;
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 183, 3, 0.45);
+        }
+        .layout-gen-expand-btn i {
+            font-size: 11px;
+        }
+
+        /* ── 90x90 Pure Image Fullscreen Popup Modal ── */
+        .layout-img-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 100085;
+            background: rgba(19, 19, 48, 0.48);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            backdrop-filter: blur(24px) saturate(180%);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 280ms cubic-bezier(0.16, 1, 0.3, 1), visibility 280ms;
+        }
+        .layout-img-backdrop.is-visible {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .layout-img-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.96);
+            width: min(92vw, calc(88vh * 16 / 9));
+            height: auto;
+            max-width: 92vw;
+            max-height: 88vh;
+            aspect-ratio: 16 / 9;
+            z-index: 100090;
+            background: rgba(7, 14, 27, 0.88);
+            -webkit-backdrop-filter: blur(28px) saturate(190%);
+            backdrop-filter: blur(28px) saturate(190%);
+            border: 1px solid rgba(255, 183, 3, 0.35);
+            border-radius: 18px;
+            box-shadow: 
+                0 4px 20px rgba(19, 19, 48, 0.15),
+                0 32px 80px rgba(0, 0, 0, 0.85),
+                inset 0 1px 1px rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            box-sizing: border-box;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 240ms cubic-bezier(0.16, 1, 0.3, 1),
+                        visibility 240ms;
+            overflow: hidden;
+        }
+        .layout-img-modal.is-visible {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .layout-img-modal.is-visible.is-rotated {
+            transform: translate(-50%, -50%) rotate(90deg) scale(1) !important;
+        }
+
+        .layout-img-view {
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+            display: block;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        /* ── Standard EVP Red Circular Close Button (Same as other components) ── */
+        .layout-img-close-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #EF4444;
+            border: none !important;
+            color: #FFFFFF;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+            flex-shrink: 0;
+            z-index: 20;
+            outline: none !important;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.45) !important;
+            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, box-shadow 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .layout-img-close-btn i {
+            font-size: 18px;
+            line-height: 1;
+            display: inline-flex;
+            margin: 0;
+            padding: 0;
+            pointer-events: none;
+            color: #FFFFFF;
+        }
+        .layout-img-close-btn:hover {
+            background: #DC2626;
+            color: #FFFFFF;
+            transform: rotate(360deg);
+            box-shadow: 0 6px 18px rgba(220, 38, 38, 0.6) !important;
+        }
+        .layout-img-close-btn:active {
+            transform: rotate(360deg) scale(0.94);
+        }
+
+        /* ── Mobile Orientation Rotate Button ── */
+        .layout-img-rotate-btn {
+            position: absolute;
+            top: 14px;
+            right: 52px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.16);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            color: #FFFFFF;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+            flex-shrink: 0;
+            z-index: 20;
+            outline: none !important;
+            transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .layout-img-rotate-btn:hover {
+            background: #FFB703;
+            border-color: #FFB703;
+            color: #131330;
+            transform: scale(1.08);
+        }
+        .layout-img-rotate-btn i {
+            font-size: 15px;
+            line-height: 1;
+            display: inline-flex;
+            pointer-events: none;
+            color: inherit;
         }
         .layout-gen-canvas-overlay {
             position: static;
@@ -678,6 +871,47 @@
                 border-radius: 9px;
                 white-space: nowrap;
             }
+
+            .layout-gen-expand-btn {
+                top: 10px;
+                right: 10px;
+                padding: 4px 9px;
+                font-size: 10px;
+                gap: 4px;
+            }
+            .layout-img-modal {
+                width: 94vw;
+                height: auto;
+                max-width: 94vw;
+                max-height: 88vh;
+                aspect-ratio: 16 / 9;
+                padding: 6px;
+                border-radius: 16px;
+            }
+            .layout-img-modal.is-rotated {
+                width: min(84vh, calc(92vw * 16 / 9));
+                height: auto;
+                aspect-ratio: 16 / 9;
+                transform: translate(-50%, -50%) rotate(90deg) scale(1) !important;
+            }
+            .layout-img-close-btn {
+                top: 10px;
+                right: 10px;
+                width: 28px;
+                height: 28px;
+            }
+            .layout-img-close-btn i {
+                font-size: 15px;
+            }
+            .layout-img-rotate-btn {
+                top: 10px;
+                right: 44px;
+                width: 28px;
+                height: 28px;
+            }
+            .layout-img-rotate-btn i {
+                font-size: 13px;
+            }
         }
 
         @media (min-width: 600px) and (max-width: 768px) {
@@ -727,6 +961,46 @@
                 padding: 7px 6px;
                 font-size: 10.5px;
                 gap: 4px;
+            }
+            .layout-gen-expand-btn {
+                top: 8px;
+                right: 8px;
+                padding: 3px 8px;
+                font-size: 9px;
+                gap: 3px;
+            }
+            .layout-img-modal {
+                width: 95vw;
+                height: auto;
+                max-width: 95vw;
+                max-height: 86vh;
+                aspect-ratio: 16 / 9;
+                padding: 5px;
+                border-radius: 12px;
+            }
+            .layout-img-modal.is-rotated {
+                width: min(84vh, calc(95vw * 16 / 9));
+                height: auto;
+                aspect-ratio: 16 / 9;
+                transform: translate(-50%, -50%) rotate(90deg) scale(1) !important;
+            }
+            .layout-img-close-btn {
+                top: 8px;
+                right: 8px;
+                width: 26px;
+                height: 26px;
+            }
+            .layout-img-close-btn i {
+                font-size: 14px;
+            }
+            .layout-img-rotate-btn {
+                top: 8px;
+                right: 38px;
+                width: 26px;
+                height: 26px;
+            }
+            .layout-img-rotate-btn i {
+                font-size: 12px;
             }
         }
     `;
@@ -803,6 +1077,10 @@
         <div class="layout-gen-body">
             <!-- Canvas Card -->
             <div class="layout-gen-canvas-wrap">
+                <button type="button" class="layout-gen-expand-btn" id="layout-gen-expand-btn" aria-label="Open Fullscreen Blueprint Image" title="Fullscreen Blueprint Image (90x90)">
+                    <i class="fi fi-rr-expand"></i>
+                    <span>Expand View</span>
+                </button>
                 <canvas id="layout-drawing-canvas" class="layout-gen-canvas" width="960" height="540"></canvas>
                 <div class="layout-gen-canvas-overlay">
                     <div class="layout-gen-legend-pill">
@@ -863,12 +1141,41 @@
     document.body.appendChild(backdrop);
     document.body.appendChild(modal);
 
+    // ── Build 90x90 Image-Only Popup Elements ────────────────────────────
+    const imgBackdrop = document.createElement("div");
+    imgBackdrop.id = "layout-img-backdrop";
+    imgBackdrop.className = "layout-img-backdrop";
+
+    const imgModal = document.createElement("div");
+    imgModal.id = "layout-img-modal";
+    imgModal.className = "layout-img-modal";
+    imgModal.setAttribute("role", "dialog");
+    imgModal.setAttribute("aria-label", "Blueprint Image Fullscreen View");
+
+    imgModal.innerHTML = `
+        <button type="button" class="layout-img-rotate-btn" id="layout-img-rotate-btn" aria-label="Rotate View 90 degrees" title="Rotate View">
+            <i class="fi fi-rr-rotate-right" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="layout-img-close-btn" id="layout-img-close-btn" aria-label="Close Fullscreen Image">
+            <i class="fi fi-rr-cross-small" aria-hidden="true"></i>
+        </button>
+        <img id="layout-img-view" class="layout-img-view" alt="2D Seating Layout Blueprint" />
+    `;
+
+    document.body.appendChild(imgBackdrop);
+    document.body.appendChild(imgModal);
+
     // ── Cache Elements ───────────────────────────────────────────────────
     const canvas = document.getElementById("layout-drawing-canvas");
     const ctx = canvas.getContext("2d");
     const closeBtn = document.getElementById("layout-gen-close-btn");
     const btnDownload = document.getElementById("layout-gen-btn-download");
     const btnWa = document.getElementById("layout-gen-btn-wa");
+    const btnExpand = document.getElementById("layout-gen-expand-btn");
+    const imgViewEl = document.getElementById("layout-img-view");
+    const imgCloseBtn = document.getElementById("layout-img-close-btn");
+    const imgRotateBtn = document.getElementById("layout-img-rotate-btn");
+    let isImageModalOpen = false;
 
     const hallPillEl = document.getElementById("layout-hall-pill");
     const hallDimsTagEl = document.getElementById("layout-hall-dims-tag");
@@ -1378,14 +1685,49 @@
         ctx.restore();
     }
 
+    // ── Architectural Top-Down Chair Drawing Engine ───────────────────────
+    function drawArchitecturalChair(cx, cy, size = 6.8, angle = 0, color = "#FFFFFF") {
+        ctx.save();
+        ctx.translate(cx, cy);
+        if (angle !== 0) ctx.rotate(angle);
+
+        const hw = size / 2;          // Half-width across armrests (~3.4px)
+        const hd = (size * 0.9) / 2;  // Half-depth front-to-back (~3.0px)
+
+        // 1. Seat Cushion (Center pad, facing North toward stage)
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        const padW = size - 2.2;
+        const padH = (size * 0.9) - 1.8;
+        if (ctx.roundRect) {
+            ctx.roundRect(-padW / 2, -hd + 0.6, padW, padH, 0.8);
+        } else {
+            ctx.rect(-padW / 2, -hd + 0.6, padW, padH);
+        }
+        ctx.fill();
+
+        // 2. Structural Backrest & Armrests (Crisp architectural U-contour)
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.1;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+
+        ctx.beginPath();
+        // Left armrest front -> left rear -> curved ergonomic backrest -> right rear -> right armrest front
+        ctx.moveTo(-hw, -hd + 0.8);
+        ctx.lineTo(-hw, hd - 0.7);
+        ctx.quadraticCurveTo(0, hd + 0.8, hw, hd - 0.7);
+        ctx.lineTo(hw, -hd + 0.8);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
     function drawChairRow(startX, endX, y, count) {
         const step = (endX - startX) / (count - 1);
         for (let i = 0; i < count; i++) {
             const cx = startX + i * step;
-            ctx.fillStyle = "#FFFFFF";
-            ctx.beginPath();
-            ctx.arc(cx, y, 2.2, 0, Math.PI * 2);
-            ctx.fill();
+            drawArchitecturalChair(cx, y, 7.0, 0, "#FFFFFF");
         }
     }
 
@@ -1473,10 +1815,7 @@
             for (let ch = 1; ch <= 3; ch++) {
                 const chairX = tx + ch * chairStep;
                 const chairY = y + 7;
-                ctx.fillStyle = "#FFB703";
-                ctx.beginPath();
-                ctx.arc(chairX, chairY, 2.0, 0, Math.PI * 2);
-                ctx.fill();
+                drawArchitecturalChair(chairX, chairY, 6.6, 0, "#FFB703");
             }
         }
     }
@@ -1531,11 +1870,8 @@
                     const angle = startAngle + ch * angleStep;
                     const cx = x + Math.cos(angle) * chairDist;
                     const cy = y + Math.sin(angle) * chairDist;
-
-                    ctx.fillStyle = "#FFB703";
-                    ctx.beginPath();
-                    ctx.arc(cx, cy, 2.4, 0, Math.PI * 2);
-                    ctx.fill();
+                    const chairAngle = (angle - Math.PI / 2) * 0.55;
+                    drawArchitecturalChair(cx, cy, 6.8, chairAngle, "#FFB703");
                 }
             }
         }
@@ -1673,7 +2009,27 @@
         drawLayoutBlueprint();
     }
 
+    function openImageModal() {
+        if (!canvas || !imgViewEl) return;
+        drawLayoutBlueprint();
+        imgViewEl.src = canvas.toDataURL("image/png");
+        imgBackdrop.classList.add("is-visible");
+        imgModal.classList.add("is-visible");
+        isImageModalOpen = true;
+    }
+
+    function closeImageModal() {
+        if (!isImageModalOpen) return;
+        imgBackdrop.classList.remove("is-visible");
+        imgModal.classList.remove("is-visible");
+        imgModal.classList.remove("is-rotated");
+        isImageModalOpen = false;
+    }
+
     function closeLayoutGenerator() {
+        if (isImageModalOpen) {
+            closeImageModal();
+        }
         document.body.classList.remove("is-layout-open");
         backdrop.classList.remove("is-visible");
         modal.classList.remove("is-visible");
@@ -1697,6 +2053,9 @@
             activeHallLetter = this.getAttribute("data-hall") || "A";
             hallTabs.forEach(t => t.classList.toggle("is-active", t.getAttribute("data-hall") === activeHallLetter));
             drawLayoutBlueprint();
+            if (isImageModalOpen && imgViewEl) {
+                imgViewEl.src = canvas.toDataURL("image/png");
+            }
         });
     });
 
@@ -1705,6 +2064,9 @@
             activeLayoutMode = this.getAttribute("data-mode") || "theatre";
             modeTabs.forEach(t => t.classList.toggle("is-active", t.getAttribute("data-mode") === activeLayoutMode));
             drawLayoutBlueprint();
+            if (isImageModalOpen && imgViewEl) {
+                imgViewEl.src = canvas.toDataURL("image/png");
+            }
         });
     });
 
@@ -1713,18 +2075,53 @@
             activeStageDepth = Number(this.getAttribute("data-depth")) || 40;
             depthTabs.forEach(t => t.classList.toggle("is-active", Number(t.getAttribute("data-depth")) === activeStageDepth));
             drawLayoutBlueprint();
+            if (isImageModalOpen && imgViewEl) {
+                imgViewEl.src = canvas.toDataURL("image/png");
+            }
         });
     });
 
     closeBtn.addEventListener("click", closeLayoutGenerator);
     backdrop.addEventListener("click", closeLayoutGenerator);
 
+    if (btnExpand) {
+        btnExpand.addEventListener("click", function (e) {
+            e.stopPropagation();
+            openImageModal();
+        });
+    }
+
+    if (canvas) {
+        canvas.addEventListener("click", function () {
+            openImageModal();
+        });
+    }
+
+    if (imgCloseBtn) {
+        imgCloseBtn.addEventListener("click", closeImageModal);
+    }
+
+    if (imgRotateBtn) {
+        imgRotateBtn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            imgModal.classList.toggle("is-rotated");
+        });
+    }
+
+    if (imgBackdrop) {
+        imgBackdrop.addEventListener("click", closeImageModal);
+    }
+
     if (btnDownload) btnDownload.addEventListener("click", downloadBlueprintPNG);
     if (btnWa) btnWa.addEventListener("click", exportBlueprintToWhatsApp);
 
     document.addEventListener("keydown", function (e) {
-        if (e.key === "Escape" && isLayoutModalOpen) {
-            closeLayoutGenerator();
+        if (e.key === "Escape") {
+            if (isImageModalOpen) {
+                closeImageModal();
+            } else if (isLayoutModalOpen) {
+                closeLayoutGenerator();
+            }
         }
     });
 
@@ -1749,11 +2146,8 @@
                 toggleLayoutGenerator();
             });
 
-            const stageBtn = document.getElementById("btn-stage-sim");
             const eyeBtn = document.getElementById("btn-clean-mode");
-            if (stageBtn && stageBtn.nextSibling) {
-                topActions.insertBefore(btn, stageBtn.nextSibling);
-            } else if (eyeBtn) {
+            if (eyeBtn) {
                 topActions.insertBefore(btn, eyeBtn);
             } else {
                 topActions.appendChild(btn);
@@ -1861,5 +2255,8 @@
             drawLayoutBlueprint();
         }
     };
+
+    // Backward-compatibility alias
+    window.evpStageSimulator = window.evpLayoutGenerator;
 
 })();

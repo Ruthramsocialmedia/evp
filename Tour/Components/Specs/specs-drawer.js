@@ -535,14 +535,14 @@
                         ${/hall\s*[a-d]/i.test(spec.title || "") ? `
                             <div style="margin-top: 10px; padding: 10px 14px; background: rgba(255, 183, 3, 0.12); border: 1px solid rgba(255, 183, 3, 0.4); border-radius: 12px; display: flex; align-items: center; justify-content: space-between;">
                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                    <i class="fi fi-rr-settings-sliders" style="color: #d97706; font-size: 15px;"></i>
+                                    <i class="fi fi-rr-blueprint" style="color: #d97706; font-size: 15px;"></i>
                                     <div>
-                                        <div style="font-size: 12px; font-weight: 800; color: #131330;">Custom Stage Dimensions?</div>
-                                        <div style="font-size: 10.5px; color: #5c5c7a; font-weight: 500;">Simulate live seating capacity delta</div>
+                                        <div style="font-size: 12px; font-weight: 800; color: #131330;">2D Seating &amp; Stage Blueprint</div>
+                                        <div style="font-size: 10.5px; color: #5c5c7a; font-weight: 500;">Interactive layout, aisle clearances &amp; live capacity</div>
                                     </div>
                                 </div>
-                                <button type="button" onclick="if(window.evpStageSimulator){window.evpStageSimulator.open(); if(typeof window.evpCloseSpecs==='function') window.evpCloseSpecs();}" style="background: #131330; color: #FFB703; border: none; border-radius: 8px; font-size: 11px; font-weight: 800; padding: 6px 12px; cursor: pointer;">
-                                    Simulate
+                                <button type="button" onclick="if(window.evpLayoutGenerator){window.evpLayoutGenerator.open(); if(typeof window.evpCloseSpecs==='function') window.evpCloseSpecs();}" style="background: #131330; color: #FFB703; border: none; border-radius: 8px; font-size: 11px; font-weight: 800; padding: 6px 12px; cursor: pointer;">
+                                    Blueprint
                                 </button>
                             </div>
                         ` : ""}

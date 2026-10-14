@@ -32,6 +32,9 @@
     <script src="script.js?v=1791364251778"></script>
     <!-- Fuse.js for fuzzy intent matching -->
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+    <!-- Leaflet 1.9.4 for Interactive Venue Satellite Map (Zero API Key) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <style type="text/css">
         html,
         body {
@@ -124,9 +127,6 @@
                             // Specs & Infographics: Architectural dataset & Bento specs drawer
                             "Components/Specs/specs-data.js",
                             "Components/Specs/specs-drawer.js",
-
-                            // Stage Simulator: Interactive stage sizing & seating capacity modeler (Halls A-D)
-                            "Components/StageSimulator/stage-simulator.js",
 
                             // Layout Generator: 2D Seating Layout Blueprint & Drawing Engine (Halls A-D)
                             "Components/LayoutGenerator/layout-generator.js",

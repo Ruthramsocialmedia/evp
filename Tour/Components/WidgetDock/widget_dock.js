@@ -66,6 +66,7 @@
             if (typeof window.closePanoDrawer === "function") window.closePanoDrawer();
             if (typeof window.closeContactModal === "function") window.closeContactModal();
             if (typeof window.closeDisclosureModal === "function") window.closeDisclosureModal();
+            if (window.evpLayoutGenerator && typeof window.evpLayoutGenerator.close === "function") window.evpLayoutGenerator.close();
             if (window.evpStageSimulator && typeof window.evpStageSimulator.close === "function") window.evpStageSimulator.close();
             document.querySelectorAll(".pcis-popover.is-open, .pcis-more-popover.is-open").forEach(function (pop) {
                 pop.classList.remove("is-open");

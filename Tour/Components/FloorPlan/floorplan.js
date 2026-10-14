@@ -12,15 +12,15 @@
 
     if (document.getElementById("evp-floorplan-root")) return;
 
-    // ── 10 Calibrated Campus Destination Nodes (Percentage Coordinates) ──
+    // ── 9 Calibrated Campus Destination Nodes (Exact User Footprint) ─────
     const CAMPUS_NODES = [
         {
             id: "hall-a",
-            name: "Exhibition Hall A",
+            name: "Hall A",
             category: "halls",
             categoryLabel: "Mega Hall",
-            x: 50.0,
-            y: 34.0,
+            lat: 13.034462787909025,
+            lng: 80.04699913584706,
             icon: "fi fi-sr-apps",
             area: "54,144 sq.ft (5,030 m²)",
             metric: "5 Tonne/m² Floor Load | 252 Rigging Points",
@@ -31,11 +31,11 @@
         },
         {
             id: "hall-b",
-            name: "Exhibition Hall B",
+            name: "Hall B",
             category: "halls",
             categoryLabel: "Mega Hall",
-            x: 58.0,
-            y: 47.0,
+            lat: 13.035014483306458,
+            lng: 80.04753722010105,
             icon: "fi fi-sr-apps",
             area: "54,144 sq.ft (5,030 m²)",
             metric: "5 Tonne/m² Floor Load | 252 Rigging Points",
@@ -46,11 +46,11 @@
         },
         {
             id: "hall-c",
-            name: "Exhibition Hall C",
+            name: "Hall C",
             category: "halls",
             categoryLabel: "Mega Hall",
-            x: 65.0,
-            y: 54.0,
+            lat: 13.035418267747495,
+            lng: 80.04779128562771,
             icon: "fi fi-sr-apps",
             area: "54,144 sq.ft (5,030 m²)",
             metric: "5 Tonne/m² Floor Load | 7 Fire Exits",
@@ -61,11 +61,11 @@
         },
         {
             id: "hall-d",
-            name: "Exhibition Hall D (Widest)",
+            name: "Hall D",
             category: "halls",
             categoryLabel: "Convention Hall",
-            x: 72.0,
-            y: 60.0,
+            lat: 13.03594691231758,
+            lng: 80.04784969228157,
             icon: "fi fi-sr-apps",
             area: "47,762 sq.ft (4,438 m²)",
             metric: "150 ft Clear Span Width | 231 Rigging Points",
@@ -76,11 +76,11 @@
         },
         {
             id: "entrance-plaza",
-            name: "Entrance Plaza & Foyer",
+            name: "Entrance Plaza",
             category: "hospitality",
             categoryLabel: "Pre-Function",
-            x: 49.5,
-            y: 51.5,
+            lat: 13.034348815074798,
+            lng: 80.04762056688891,
             icon: "fi fi-sr-archway",
             area: "20,300 sq.ft (1,885 m²)",
             metric: "Grand Registration Concourse & Information Desks",
@@ -91,11 +91,11 @@
         },
         {
             id: "food-court",
-            name: "Central Food Court & Dining",
+            name: "Food Court Open Dining Area",
             category: "hospitality",
             categoryLabel: "Culinary Hub",
-            x: 48.5,
-            y: 64.5,
+            lat: 13.034145637407287,
+            lng: 80.04717696430738,
             icon: "fi fi-sr-restaurant",
             area: "26,364 sq.ft (2,449 m²)",
             metric: "14 Modular Culinary Kiosks + 800-Seat Dining Hall",
@@ -105,42 +105,27 @@
             gsvId: null
         },
         {
-            id: "canvas-1",
-            name: "THE CANVAS 1 (Open Arena)",
-            category: "outdoor",
-            categoryLabel: "Outdoor Arena",
-            x: 50.5,
-            y: 8.5,
-            icon: "fi fi-sr-flag",
-            area: "93,980 sq.ft (8,732 m²)",
-            metric: "Clear-Span Heavy Concrete Arena (15,000 Guests)",
-            panoName: null,
-            panoKey: null,
-            isIndoor: false,
-            gsvId: "canvas1"
-        },
-        {
-            id: "canvas-2",
-            name: "THE CANVAS 2 (Mega Concert Ground)",
-            category: "outdoor",
-            categoryLabel: "Concert Arena",
-            x: 77.0,
-            y: 38.0,
-            icon: "fi fi-sr-flag",
-            area: "1,89,564 sq.ft (17,611 m²)",
-            metric: "Massive Open-Air Festival & Staging Grounds",
-            panoName: null,
-            panoKey: null,
-            isIndoor: false,
-            gsvId: "canvas2"
+            id: "cafe",
+            name: "Cafe",
+            category: "hospitality",
+            categoryLabel: "Dining & Cafe",
+            lat: 13.033112499066256,
+            lng: 80.04797984011672,
+            icon: "fi fi-sr-restaurant",
+            area: "Premium Coffee Lounge & Terrace",
+            metric: "Artisanal Brews, Pastries & Executive Networking",
+            panoName: "Food Court",
+            panoKey: "Food Court",
+            isIndoor: true,
+            gsvId: null
         },
         {
             id: "parking-1",
-            name: "Parking Zone 1 (Main Campus Parking)",
+            name: "Parking",
             category: "outdoor",
             categoryLabel: "Parking Bay",
-            x: 61.0,
-            y: 82.5,
+            lat: 13.035240842658904,
+            lng: 80.04852688595672,
             icon: "fi fi-sr-car",
             area: "Paved Heavy Parking (8,000+ Vehicles)",
             metric: "Direct Access to Trade Halls & Heavy Transport",
@@ -154,8 +139,8 @@
             name: "Grand Highway Arrival Gate",
             category: "outdoor",
             categoryLabel: "Highway Portal",
-            x: 80.5,
-            y: 74.0,
+            lat: 13.03661729730688,
+            lng: 80.04795852152263,
             icon: "fi fi-sr-road",
             area: "NH-4 National Highway Access",
             metric: "Monumental Highway Portal & Security Checkpoints",
@@ -166,9 +151,43 @@
         }
     ];
 
+    // ── Campus Walkway GPS Graph for Google Maps Avenue & Portico Routing ─────
+    const CAMPUS_GPS_GRAPH = {
+        // --- 9 Destination Hubs ---
+        "arrival-gate": { lat: 13.03661729730688, lng: 80.04795852152263, neighbors: ["ave-d"] },
+        "hall-d": { lat: 13.03594691231758, lng: 80.04784969228157, neighbors: ["ave-d"] },
+        "hall-c": { lat: 13.035418267747495, lng: 80.04779128562771, neighbors: ["ave-c"] },
+        "parking-1": { lat: 13.035240842658904, lng: 80.04852688595672, neighbors: ["ave-park"] },
+        "hall-b": { lat: 13.035014483306458, lng: 80.04753722010105, neighbors: ["ave-b"] },
+        "entrance-plaza": { lat: 13.034348815074798, lng: 80.04762056688891, neighbors: ["ave-plaza", "w-plaza-west"] },
+        "hall-a": { lat: 13.034462787909025, lng: 80.04699913584706, neighbors: ["w-plaza-west"] },
+        "food-court": { lat: 13.034145637407287, lng: 80.04717696430738, neighbors: ["w-plaza-west"] },
+        "cafe": { lat: 13.033112499066256, lng: 80.04797984011672, neighbors: ["ave-plaza"] },
+
+        // --- Straight North-South Main Avenue Spine (lng: 80.0479585) ---
+        "ave-d": { lat: 13.03594691231758, lng: 80.04795852152263, neighbors: ["arrival-gate", "hall-d", "ave-c"] },
+        "ave-c": { lat: 13.035418267747495, lng: 80.04795852152263, neighbors: ["ave-d", "hall-c", "ave-park"] },
+        "ave-park": { lat: 13.035240842658904, lng: 80.04795852152263, neighbors: ["ave-c", "parking-1", "ave-b"] },
+        "ave-b": { lat: 13.035014483306458, lng: 80.04795852152263, neighbors: ["ave-park", "hall-b", "ave-plaza"] },
+        "ave-plaza": { lat: 13.034348815074798, lng: 80.04795852152263, neighbors: ["ave-b", "entrance-plaza", "cafe"] },
+
+        // --- Plaza West Walkway to Hall A & Food Court ---
+        "w-plaza-west": { lat: 13.034348815074798, lng: 80.04725000000000, neighbors: ["entrance-plaza", "hall-a", "food-court"] }
+    };
+
     let isModalOpen = false;
     let activeFilter = "all";
     let activeNodeId = "hall-a";
+    let activeDestinationNodeId = null;
+
+    // Leaflet Map Runtime Variables
+    let leafletMap = null;
+    let activeTileLayer = null;
+    let activeRouteGlow = null;
+    let activeRouteDash = null;
+    let activeCalloutMarker = null;
+    const leafletMarkers = {};
+    let activeLayerType = "satellite";
 
     // ── Inject Component CSS ─────────────────────────────────────────────
     const styleEl = document.createElement("style");
@@ -212,14 +231,16 @@
             pointer-events: auto;
         }
 
-        /* ── Floor Plan Modal Container ── */
+        /* ── Floor Plan Modal Container (90vw × 90vh) ── */
         .evp-fp-modal {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0.96);
-            width: min(940px, 94vw);
-            max-height: 92vh;
+            width: 90vw;
+            height: 90vh;
+            max-width: 90vw;
+            max-height: 90vh;
             background: rgba(255, 255, 255, 0.95);
             -webkit-backdrop-filter: blur(32px) saturate(190%);
             backdrop-filter: blur(32px) saturate(190%);
@@ -322,11 +343,7 @@
         .evp-fp-close-btn i {
             font-size: 18px;
             line-height: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 1em;
-            height: 1em;
+            display: inline-flex;
             margin: 0;
             padding: 0;
             pointer-events: none;
@@ -751,12 +768,474 @@
             box-shadow: 0 0 6px rgba(37, 211, 102, 0.7);
         }
 
+        /* ── Leaflet Interactive Satellite Stage & Controls ── */
+        .evp-fp-map-stage {
+            position: relative;
+            background: #0b0c16;
+            flex: 1;
+            height: 100%;
+            min-height: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .evp-fp-leaflet-container {
+            width: 100%;
+            height: 100%;
+            background: #0b0c16;
+            outline: none;
+            z-index: 10;
+        }
+        /* Leaflet custom marker wrapper */
+        .evp-leaflet-div-icon {
+            background: transparent !important;
+            border: none !important;
+            overflow: visible !important;
+        }
+        .evp-leaflet-pin-wrapper {
+            position: absolute;
+            left: 0;
+            top: 0;
+            overflow: visible !important;
+            pointer-events: auto !important;
+        }
+        .evp-leaflet-pin-wrapper .evp-fp-pin {
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            transform: translate(-50%, -50%) !important;
+        }
+        /* Floating Map Controls (Top-Left) */
+        .evp-fp-map-controls-left {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            z-index: 40;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            pointer-events: auto;
+        }
+        .evp-fp-ctrl-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.94);
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            color: #131330;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(19, 19, 48, 0.14);
+            transition: all 180ms ease;
+        }
+        .evp-fp-ctrl-btn:hover {
+            background: #ffffff;
+            color: #FFB703;
+            transform: scale(1.06);
+            box-shadow: 0 6px 20px rgba(255, 183, 3, 0.35);
+        }
+        .evp-fp-ctrl-btn i {
+            font-size: 15px;
+            line-height: 1;
+        }
+        .evp-fp-ctrl-btn svg {
+            width: 17px;
+            height: 17px;
+            display: block;
+            pointer-events: none;
+            transition: transform 180ms ease;
+        }
+        .evp-fp-layer-switcher {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.94);
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 3px;
+            gap: 3px;
+            box-shadow: 0 4px 16px rgba(19, 19, 48, 0.14);
+        }
+        .evp-fp-layer-btn {
+            border: none;
+            background: transparent;
+            padding: 5px 10px;
+            border-radius: 9px;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            font-size: 11px;
+            font-weight: 700;
+            color: #5C5C7A;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 180ms ease;
+        }
+        .evp-fp-layer-btn.is-active {
+            background: #131330;
+            color: #FFB703;
+            box-shadow: 0 2px 8px rgba(19, 19, 48, 0.25);
+        }
+        .evp-fp-zoom-controls {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            z-index: 40;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            pointer-events: auto;
+        }
+        .evp-fp-zoom-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.94);
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            color: #131330;
+            font-size: 18px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(19, 19, 48, 0.12);
+            transition: all 180ms ease;
+            line-height: 1;
+            padding: 0;
+            margin: 0;
+        }
+        .evp-fp-zoom-btn:hover {
+            background: #ffffff;
+            color: #FFB703;
+            transform: scale(1.08);
+        }
+        /* ── Google Maps Walking Route Dots ── */
+        .evp-gmaps-dots-bg,
+        .evp-gmaps-dots-fg {
+            stroke-linecap: round !important;
+            stroke-linejoin: round !important;
+            animation: evpGmapsDotsFlow 1.4s linear infinite;
+        }
+        @keyframes evpGmapsDotsFlow {
+            from {
+                stroke-dashoffset: 15.1;
+            }
+            to {
+                stroke-dashoffset: 0.1;
+            }
+        }
+
+        /* ── Google Maps Floating Midpoint Callout Box ── */
+        .evp-gmaps-callout-wrapper {
+            position: relative;
+        }
+        .evp-gmaps-callout {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ffffff;
+            color: #1f2937;
+            border-radius: 6px;
+            padding: 5px 9px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.35), 0 0 1px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, 'Plus Jakarta Sans', sans-serif;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            white-space: nowrap;
+            line-height: 1.15;
+            z-index: 1000;
+        }
+        .evp-gmaps-callout::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px 5px 0 5px;
+            border-style: solid;
+            border-color: #ffffff transparent transparent transparent;
+            filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.15));
+        }
+        .evp-gmaps-callout-header {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #111827;
+        }
+        .evp-gmaps-walker-svg {
+            width: 12px;
+            height: 12px;
+            fill: #111827;
+            flex-shrink: 0;
+        }
+        .evp-gmaps-callout-time {
+            font-size: 12px;
+            font-weight: 700;
+            color: #111827;
+            letter-spacing: -0.2px;
+        }
+        .evp-gmaps-callout-dist {
+            font-size: 10px;
+            font-weight: 500;
+            color: #4b5563;
+            margin-top: 1px;
+        }
+
+        /* ── Google Maps Destination Pin State (Red Pin & Ripple) ── */
+        .evp-fp-pin.is-destination {
+            z-index: 45 !important;
+        }
+        .evp-fp-pin.is-destination .evp-fp-pin-dot {
+            background: #EA4335 !important;
+            color: #FFFFFF !important;
+            border-color: #FFFFFF !important;
+            box-shadow: 0 0 0 3px rgba(234, 67, 53, 0.45), 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+            animation: evpGoogleDestPulse 1.6s infinite ease-in-out !important;
+        }
+        @keyframes evpGoogleDestPulse {
+            0%, 100% {
+                box-shadow: 0 0 0 3px rgba(234, 67, 53, 0.45), 0 0 16px rgba(234, 67, 53, 0.7);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 0 7px rgba(234, 67, 53, 0.2), 0 0 24px rgba(234, 67, 53, 0.95);
+                transform: scale(1.12);
+            }
+        }
+        .evp-fp-dest-badge {
+            position: absolute;
+            bottom: calc(100% + 9px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: #EA4335;
+            color: #FFFFFF;
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            border-radius: 999px;
+            padding: 2.5px 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 3px 10px rgba(234, 67, 53, 0.5);
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 25;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 200ms ease;
+        }
+        .evp-fp-dest-badge.is-flipped-down {
+            bottom: auto;
+            top: calc(100% + 9px);
+        }
+        .evp-fp-pin.is-destination .evp-fp-dest-badge {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* ── Floating Directions HUD ── */
+        .evp-fp-dir-hud {
+            position: absolute;
+            bottom: 14px;
+            left: 50%;
+            transform: translateX(-50%) translateY(24px);
+            width: min(560px, calc(100% - 24px));
+            background: rgba(255, 255, 255, 0.94);
+            -webkit-backdrop-filter: blur(24px) saturate(190%);
+            backdrop-filter: blur(24px) saturate(190%);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 
+                0 4px 14px rgba(19, 19, 48, 0.08),
+                0 20px 48px rgba(19, 19, 48, 0.22),
+                inset 0 1px 1px rgba(255, 255, 255, 1);
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            z-index: 50;
+            box-sizing: border-box;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 240ms ease,
+                        visibility 240ms ease;
+        }
+        .evp-fp-dir-hud.is-visible {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translateX(-50%) translateY(0);
+        }
+        .evp-fp-dir-left {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 0;
+            flex: 1;
+        }
+        .evp-fp-dir-top-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .evp-fp-dir-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 183, 3, 0.16);
+            color: #B45309;
+            border: 1px solid rgba(255, 183, 3, 0.45);
+            border-radius: 6px;
+            padding: 1.5px 6px;
+            font-size: 9.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            line-height: 1.2;
+        }
+        .evp-fp-dir-badge i {
+            font-size: 8.5px;
+        }
+        .evp-fp-dir-metrics {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10.5px;
+            color: #5C5C7A;
+            font-weight: 600;
+        }
+        .evp-fp-dir-metric {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .evp-fp-dir-metric i {
+            color: #FFB703;
+            font-size: 9px;
+        }
+        .evp-fp-dir-dot {
+            color: #CBD5E1;
+            font-size: 8px;
+        }
+        .evp-fp-dir-endpoints {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #131330;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .evp-fp-dir-from {
+            color: #10B981;
+        }
+        .evp-fp-dir-arrow {
+            font-size: 11px;
+            color: #94A3B8;
+        }
+        .evp-fp-dir-to {
+            color: #131330;
+        }
+        .evp-fp-dir-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .evp-fp-btn-explore {
+            background: #FFB703;
+            color: #131330;
+            border: none;
+            border-radius: 10px;
+            padding: 7px 14px;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            font-size: 11.5px;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 2px 10px rgba(255, 183, 3, 0.4);
+            white-space: nowrap;
+        }
+        .evp-fp-btn-explore:hover {
+            background: #E0A100;
+            transform: translateY(-1px) scale(1.03);
+            box-shadow: 0 4px 16px rgba(255, 183, 3, 0.55);
+        }
+        .evp-fp-btn-explore i {
+            font-size: 11px;
+        }
+        /* ── Standard EVP Red Circular Close Button (360° Hover Spin) ── */
+        .evp-fp-btn-clear {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #EF4444;
+            border: none !important;
+            color: #FFFFFF;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+            flex-shrink: 0;
+            outline: none !important;
+            box-shadow: none !important;
+            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .evp-fp-btn-clear i {
+            font-size: 18px;
+            line-height: 1;
+            display: inline-flex;
+            margin: 0;
+            padding: 0;
+            pointer-events: none;
+            color: #FFFFFF;
+        }
+        .evp-fp-btn-clear:hover {
+            background: #DC2626;
+            color: #FFFFFF;
+            transform: rotate(360deg);
+        }
+        .evp-fp-btn-clear:active {
+            transform: rotate(360deg) scale(0.94);
+        }
+
         /* ── Mobile Responsiveness ── */
         @media (max-width: 768px) {
             .evp-fp-modal {
-                width: 95vw !important;
-                max-width: 440px !important;
-                max-height: 92vh !important;
+                width: 90vw !important;
+                height: 90vh !important;
+                max-width: 90vw !important;
+                max-height: 90vh !important;
                 border-radius: 18px !important;
             }
             .evp-fp-header {
@@ -777,18 +1256,19 @@
                 font-size: 10px !important;
                 line-height: 1.25 !important;
             }
-            .evp-fp-close-btn {
+            .evp-fp-close-btn,
+            .evp-fp-btn-clear {
                 width: 30px !important;
                 height: 30px !important;
                 min-width: 30px !important;
             }
-            .evp-fp-close-btn i {
+            .evp-fp-close-btn i,
+            .evp-fp-btn-clear i {
                 font-size: 16px !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                width: 1em !important;
-                height: 1em !important;
+                display: inline-flex !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                color: #FFFFFF !important;
             }
             .evp-fp-filter-bar {
                 padding: 6px 8px !important;
@@ -1011,70 +1491,83 @@
         <!-- Filter Bar -->
         <div class="evp-fp-filter-bar">
             <button type="button" class="evp-fp-filter-btn is-active" data-filter="all">
-                <span class="evp-fp-btn-full">All Locations (10)</span>
-                <span class="evp-fp-btn-short">All (10)</span>
+                <span class="evp-fp-btn-full">All Locations (9)</span>
+                <span class="evp-fp-btn-short">All (9)</span>
             </button>
             <button type="button" class="evp-fp-filter-btn" data-filter="halls">
-                <span class="evp-fp-btn-full">Exhibition Halls (A–D)</span>
+                <span class="evp-fp-btn-full">Halls (A–D)</span>
                 <span class="evp-fp-btn-short">Halls (A–D)</span>
             </button>
             <button type="button" class="evp-fp-filter-btn" data-filter="hospitality">
-                <span class="evp-fp-btn-full">Hospitality &amp; Dining</span>
+                <span class="evp-fp-btn-full">Dining &amp; Hospitality</span>
                 <span class="evp-fp-btn-short">Dining</span>
             </button>
             <button type="button" class="evp-fp-filter-btn" data-filter="outdoor">
-                <span class="evp-fp-btn-full">Outdoor Arenas &amp; Parking</span>
-                <span class="evp-fp-btn-short">Outdoor</span>
+                <span class="evp-fp-btn-full">Parking &amp; Arrival</span>
+                <span class="evp-fp-btn-short">Parking</span>
             </button>
         </div>
 
-        <!-- Map Stage -->
+        <!-- Map Stage (Interactive Satellite View) -->
         <div class="evp-fp-map-stage">
-            <div class="evp-fp-map-wrap" id="evp-fp-map-wrap">
-                <img src="Components/FloorPlan/Assets/floor-plan.png" class="evp-fp-map-img" alt="EVP Trade &amp; Convention Centre Site Map" />
+            <div id="evp-leaflet-map" class="evp-fp-leaflet-container"></div>
 
-                <!-- Nodes -->
-                ${CAMPUS_NODES.map(node => `
-                    <div class="evp-fp-pin ${node.id === activeNodeId ? "is-active" : ""}" 
-                         id="fp-pin-${node.id}" 
-                         data-id="${node.id}"
-                         data-cat="${node.category}"
-                         style="left: ${node.x}%; top: ${node.y}%;">
-                        
-                        <!-- You Are Here Wayfinding Marker Badge -->
-                        <div class="evp-fp-yah-badge ${node.y < 22 ? "is-flipped-down" : ""}">
-                            <span class="evp-fp-yah-dot"></span>
-                            <span class="evp-fp-yah-text">You Are Here</span>
-                        </div>
+            <!-- Floating Top-Left Controls: Recenter + Layer Switcher -->
+            <div class="evp-fp-map-controls-left">
+                <button type="button" class="evp-fp-ctrl-btn" id="evp-fp-btn-recenter" title="Recenter Campus View" aria-label="Recenter campus view">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="12" r="7.5" fill="none" stroke="currentColor" stroke-width="2.2" />
+                        <line x1="12" y1="1" x2="12" y2="4.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+                        <line x1="12" y1="19.5" x2="12" y2="23" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+                        <line x1="1" y1="12" x2="4.5" y2="12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+                        <line x1="19.5" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+                        <circle cx="12" cy="12" r="2.5" fill="currentColor" />
+                    </svg>
+                </button>
+                <div class="evp-fp-layer-switcher">
+                    <button type="button" class="evp-fp-layer-btn is-active" id="evp-layer-satellite" data-layer="satellite" title="Pure Satellite (Only our campus pins)">
+                        <i class="fi fi-sr-globe"></i> <span>Clean Satellite</span>
+                    </button>
+                    <button type="button" class="evp-fp-layer-btn" id="evp-layer-hybrid" data-layer="hybrid" title="Hybrid view (Includes external shops & POIs)">
+                        <i class="fi fi-sr-map"></i> <span>External POIs</span>
+                    </button>
+                </div>
+            </div>
 
-                        <!-- Real-time Rotating Camera Radar FOV Cone -->
-                        <div class="evp-fp-radar-cone" id="fp-radar-${node.id}">
-                            <svg viewBox="0 0 100 100" class="evp-fp-radar-svg">
-                                <defs>
-                                    <radialGradient id="evp-radar-grad-${node.id}" cx="50%" cy="50%" r="50%">
-                                        <stop offset="0%" stop-color="#FFB703" stop-opacity="0.8" />
-                                        <stop offset="60%" stop-color="#FFB703" stop-opacity="0.32" />
-                                        <stop offset="100%" stop-color="#FFB703" stop-opacity="0" />
-                                    </radialGradient>
-                                </defs>
-                                <path d="M 50 50 L 15 5 A 50 50 0 0 1 85 5 Z" fill="url(#evp-radar-grad-${node.id})" />
-                                <line x1="50" y1="50" x2="50" y2="5" stroke="#FFB703" stroke-width="1.5" stroke-dasharray="2,2" opacity="0.85" />
-                            </svg>
-                        </div>
+            <!-- Floating Top-Right Zoom Controls -->
+            <div class="evp-fp-zoom-controls">
+                <button type="button" class="evp-fp-zoom-btn" id="evp-fp-zoom-in" title="Zoom In" aria-label="Zoom in">+</button>
+                <button type="button" class="evp-fp-zoom-btn" id="evp-fp-zoom-out" title="Zoom Out" aria-label="Zoom out">−</button>
+            </div>
 
-                        <!-- Pin Marker Dot -->
-                        <div class="evp-fp-pin-dot">
-                            ${getNodeSvgIcon(node.icon)}
-                        </div>
-
-                        <!-- Interactive Tooltip -->
-                        <div class="evp-fp-tooltip ${node.y < 22 ? "is-flipped-down" : ""}">
-                            <span class="evp-fp-tt-title">${node.name}</span>
-                            <span class="evp-fp-tt-sub">${node.area}</span>
-                            <span class="evp-fp-tt-hint"><i class="fi fi-rr-arrow-right"></i> Click to explore</span>
+            <!-- Floating Directions HUD -->
+            <div class="evp-fp-dir-hud" id="evp-fp-dir-hud">
+                <div class="evp-fp-dir-left">
+                    <div class="evp-fp-dir-top-row">
+                        <span class="evp-fp-dir-badge">
+                            <i class="fi fi-sr-navigation"></i> Walking Route
+                        </span>
+                        <div class="evp-fp-dir-metrics">
+                            <span class="evp-fp-dir-metric" id="evp-dir-metric-dist"><i class="fi fi-rr-ruler-triangle"></i> -- m</span>
+                            <span class="evp-fp-dir-dot">•</span>
+                            <span class="evp-fp-dir-metric" id="evp-dir-metric-time"><i class="fi fi-rr-clock"></i> ~-- min walk</span>
                         </div>
                     </div>
-                `).join("")}
+                    <div class="evp-fp-dir-endpoints">
+                        <span class="evp-fp-dir-from" id="evp-dir-from-name">Origin</span>
+                        <i class="fi fi-rr-arrow-right evp-fp-dir-arrow"></i>
+                        <span class="evp-fp-dir-to" id="evp-dir-to-name">Destination</span>
+                    </div>
+                </div>
+                <div class="evp-fp-dir-actions">
+                    <button type="button" class="evp-fp-btn-explore" id="evp-fp-btn-explore" title="Enter 360° viewpoint">
+                        <i class="fi fi-sr-eye"></i>
+                        <span>Explore 360°</span>
+                    </button>
+                    <button type="button" class="evp-fp-btn-clear" id="evp-fp-btn-clear" aria-label="Clear route" title="Clear Route">
+                        <i class="fi fi-rr-cross-small" aria-hidden="true"></i>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -1148,6 +1641,7 @@
             return;
         }
 
+        const changed = nodeId !== activeNodeId;
         activeNodeId = nodeId;
 
         // Update pin states
@@ -1160,6 +1654,16 @@
         const textEl = document.getElementById("evp-fp-active-text");
         if (textEl && activeNode) {
             textEl.textContent = `Viewing: ${activeNode.name}`;
+        }
+
+        // If user arrived at destination, clear route; otherwise re-route from new origin
+        if (activeDestinationNodeId === nodeId) {
+            clearDirectionRoute();
+        } else if (activeDestinationNodeId && changed) {
+            const destNode = CAMPUS_NODES.find(n => n.id === activeDestinationNodeId);
+            if (destNode) {
+                showDirectionToNode(destNode);
+            }
         }
     }
 
@@ -1186,7 +1690,435 @@
         }
 
         setActiveNode(node.id);
+        clearDirectionRoute();
         closeFloorPlan();
+    }
+
+    // ── GPS Haversine Distance Calculation (Meters) ──────────────────────
+    function getGpsDistanceMeters(lat1, lon1, lat2, lon2) {
+        const R = 6371000;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+    }
+
+    // ── Campus Walkway GPS Dijkstra Routing Engine ───────────────────────
+    function findShortestGpsRoute(startId, targetId) {
+        if (!CAMPUS_GPS_GRAPH[startId] || !CAMPUS_GPS_GRAPH[targetId]) {
+            const s = CAMPUS_NODES.find(n => n.id === startId);
+            const t = CAMPUS_NODES.find(n => n.id === targetId);
+            return {
+                latlngs: [
+                    [s ? s.lat : 13.0336, s ? s.lng : 80.0522],
+                    [t ? t.lat : 13.0336, t ? t.lng : 80.0522]
+                ],
+                meters: 150,
+                minutes: 2
+            };
+        }
+
+        const dist = {};
+        const prev = {};
+        const unvisited = new Set(Object.keys(CAMPUS_GPS_GRAPH));
+
+        Object.keys(CAMPUS_GPS_GRAPH).forEach(id => {
+            dist[id] = Infinity;
+        });
+        dist[startId] = 0;
+
+        while (unvisited.size > 0) {
+            let current = null;
+            let lowestDist = Infinity;
+            for (const id of unvisited) {
+                if (dist[id] < lowestDist) {
+                    lowestDist = dist[id];
+                    current = id;
+                }
+            }
+
+            if (current === null || dist[current] === Infinity || current === targetId) {
+                break;
+            }
+
+            unvisited.delete(current);
+
+            const currNode = CAMPUS_GPS_GRAPH[current];
+            for (const neighborId of currNode.neighbors) {
+                if (!unvisited.has(neighborId)) continue;
+                const neighborNode = CAMPUS_GPS_GRAPH[neighborId];
+                const weight = getGpsDistanceMeters(currNode.lat, currNode.lng, neighborNode.lat, neighborNode.lng);
+                const alt = dist[current] + weight;
+                if (alt < dist[neighborId]) {
+                    dist[neighborId] = alt;
+                    prev[neighborId] = current;
+                }
+            }
+        }
+
+        const latlngs = [];
+        let curr = targetId;
+        if (dist[targetId] !== Infinity || startId === targetId) {
+            while (curr) {
+                const node = CAMPUS_GPS_GRAPH[curr];
+                latlngs.unshift([node.lat, node.lng]);
+                curr = prev[curr];
+            }
+        }
+
+        let totalMeters = 0;
+        for (let i = 0; i < latlngs.length - 1; i++) {
+            totalMeters += getGpsDistanceMeters(latlngs[i][0], latlngs[i][1], latlngs[i + 1][0], latlngs[i + 1][1]);
+        }
+        const meters = Math.round(totalMeters);
+        const minutes = Math.max(1, Math.round(meters / 75));
+
+        return { latlngs, meters, minutes };
+    }
+
+    // ── Calculate Geodesic Midpoint for Google Maps Route Callout Badge ──
+    function getRouteMidpoint(latlngs, totalMeters) {
+        if (!latlngs || latlngs.length === 0) return null;
+        if (latlngs.length === 1) return latlngs[0];
+        const halfDist = (totalMeters || 0) / 2;
+        let accumulated = 0;
+        for (let i = 0; i < latlngs.length - 1; i++) {
+            const segDist = getGpsDistanceMeters(latlngs[i][0], latlngs[i][1], latlngs[i + 1][0], latlngs[i + 1][1]);
+            if (accumulated + segDist >= halfDist && segDist > 0) {
+                const fraction = (halfDist - accumulated) / segDist;
+                return [
+                    latlngs[i][0] + (latlngs[i + 1][0] - latlngs[i][0]) * fraction,
+                    latlngs[i][1] + (latlngs[i + 1][1] - latlngs[i][1]) * fraction
+                ];
+            }
+            accumulated += segDist;
+        }
+        return latlngs[Math.floor(latlngs.length / 2)];
+    }
+
+    // ── Custom Leaflet HTML Marker Factory ───────────────────────────────
+    function createNodeMarker(node) {
+        const isAct = node.id === activeNodeId;
+        const isDest = node.id === activeDestinationNodeId;
+        const wrapper = document.createElement("div");
+        wrapper.className = "evp-leaflet-pin-wrapper";
+        wrapper.innerHTML = `
+            <div class="evp-fp-pin ${isAct ? "is-active" : ""} ${isDest ? "is-destination" : ""}" 
+                 id="fp-pin-${node.id}" 
+                 data-id="${node.id}"
+                 data-cat="${node.category}">
+                
+                <!-- You Are Here Wayfinding Marker Badge -->
+                <div class="evp-fp-yah-badge">
+                    <span class="evp-fp-yah-dot"></span>
+                    <span class="evp-fp-yah-text">You Are Here</span>
+                </div>
+
+                <!-- Destination Wayfinding Target Badge -->
+                <div class="evp-fp-dest-badge">
+                    <i class="fi fi-sr-flag"></i>
+                    <span>Target</span>
+                </div>
+
+                <!-- Real-time Rotating Camera Radar FOV Cone -->
+                <div class="evp-fp-radar-cone" id="fp-radar-${node.id}">
+                    <svg viewBox="0 0 100 100" class="evp-fp-radar-svg">
+                        <defs>
+                            <radialGradient id="evp-radar-grad-${node.id}" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#FFB703" stop-opacity="0.8" />
+                                <stop offset="60%" stop-color="#FFB703" stop-opacity="0.32" />
+                                <stop offset="100%" stop-color="#FFB703" stop-opacity="0" />
+                            </radialGradient>
+                        </defs>
+                        <path d="M 50 50 L 15 5 A 50 50 0 0 1 85 5 Z" fill="url(#evp-radar-grad-${node.id})" />
+                        <line x1="50" y1="50" x2="50" y2="5" stroke="#FFB703" stroke-width="1.5" stroke-dasharray="2,2" opacity="0.85" />
+                    </svg>
+                </div>
+
+                <!-- Pin Marker Dot -->
+                <div class="evp-fp-pin-dot">
+                    ${getNodeSvgIcon(node.icon)}
+                </div>
+
+                <!-- Interactive Tooltip -->
+                <div class="evp-fp-tooltip">
+                    <span class="evp-fp-tt-title">${node.name}</span>
+                    <span class="evp-fp-tt-sub">${node.area}</span>
+                    <span class="evp-fp-tt-hint"><i class="fi fi-rr-arrow-right"></i> Click to route</span>
+                </div>
+            </div>
+        `;
+
+        const icon = L.divIcon({
+            className: "evp-leaflet-div-icon",
+            html: wrapper,
+            iconSize: [0, 0],
+            iconAnchor: [0, 0]
+        });
+
+        const marker = L.marker([node.lat, node.lng], { icon: icon, riseOnHover: true });
+
+        marker.on("click", function (e) {
+            if (L.DomEvent) L.DomEvent.stopPropagation(e);
+            handlePinClick(node);
+        });
+
+        return marker;
+    }
+
+    function handlePinClick(node) {
+        if (!node) return;
+
+        // If user clicked their current location ("You Are Here")
+        if (node.id === activeNodeId) {
+            clearDirectionRoute();
+            return;
+        }
+
+        // If user clicked the already selected destination a 2nd time -> Explore 360°
+        if (activeDestinationNodeId === node.id) {
+            clearDirectionRoute();
+            navigateToNode(node);
+            return;
+        }
+
+        // 1st click -> Show animated walking direction route
+        showDirectionToNode(node);
+    }
+
+    function showDirectionToNode(targetNode) {
+        if (!targetNode || targetNode.id === activeNodeId) {
+            clearDirectionRoute();
+            return;
+        }
+
+        activeDestinationNodeId = targetNode.id;
+
+        // 1. Mark destination pin DOM element
+        document.querySelectorAll(".evp-fp-pin").forEach(pin => {
+            const isDest = pin.getAttribute("data-id") === targetNode.id;
+            pin.classList.toggle("is-destination", isDest);
+        });
+
+        // 2. Solve shortest GPS route
+        const result = findShortestGpsRoute(activeNodeId, targetNode.id);
+
+        // 3. Clear previous polylines & callout
+        if (activeRouteGlow && leafletMap) {
+            leafletMap.removeLayer(activeRouteGlow);
+            activeRouteGlow = null;
+        }
+        if (activeRouteDash && leafletMap) {
+            leafletMap.removeLayer(activeRouteDash);
+            activeRouteDash = null;
+        }
+        if (activeCalloutMarker && leafletMap) {
+            leafletMap.removeLayer(activeCalloutMarker);
+            activeCalloutMarker = null;
+        }
+
+        // 4. Render Google Maps Walking Dots in Leaflet
+        if (leafletMap && result.latlngs && result.latlngs.length >= 2) {
+            // Background high-contrast navy shadow outline
+            activeRouteGlow = L.polyline(result.latlngs, {
+                color: "#0F172A",
+                weight: 10,
+                opacity: 0.92,
+                dashArray: "0.1, 15",
+                className: "evp-gmaps-dots-bg",
+                lineCap: "round",
+                lineJoin: "round"
+            }).addTo(leafletMap);
+
+            // Google Maps blue circular dots
+            activeRouteDash = L.polyline(result.latlngs, {
+                color: "#3B82F6",
+                weight: 6.5,
+                opacity: 1,
+                dashArray: "0.1, 15",
+                className: "evp-gmaps-dots-fg",
+                lineCap: "round",
+                lineJoin: "round"
+            }).addTo(leafletMap);
+
+            // Floating Google Maps Route Callout Badge at midpoint
+            const midPoint = getRouteMidpoint(result.latlngs, result.meters);
+            if (midPoint) {
+                const distText = result.meters >= 1000 ? (result.meters / 1000).toFixed(1) + " km" : result.meters + "m";
+                const calloutIcon = L.divIcon({
+                    className: "evp-gmaps-callout-wrapper",
+                    html: `
+                        <div class="evp-gmaps-callout">
+                            <div class="evp-gmaps-callout-header">
+                                <svg class="evp-gmaps-walker-svg" viewBox="0 0 24 24">
+                                    <path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7z"/>
+                                </svg>
+                                <span class="evp-gmaps-callout-time">${result.minutes} min</span>
+                            </div>
+                            <div class="evp-gmaps-callout-dist">${distText}</div>
+                        </div>
+                    `,
+                    iconSize: [0, 0],
+                    iconAnchor: [0, 0]
+                });
+                activeCalloutMarker = L.marker(midPoint, {
+                    icon: calloutIcon,
+                    interactive: false,
+                    zIndexOffset: 1200
+                }).addTo(leafletMap);
+            }
+
+            // Automatically frame the route smoothly with padding
+            leafletMap.fitBounds(activeRouteDash.getBounds(), {
+                padding: [60, 60],
+                maxZoom: 18.5,
+                animate: true
+            });
+        }
+
+        // 5. Update Directions HUD
+        const hud = document.getElementById("evp-fp-dir-hud");
+        const originNode = CAMPUS_NODES.find(n => n.id === activeNodeId);
+        const fromEl = document.getElementById("evp-dir-from-name");
+        const toEl = document.getElementById("evp-dir-to-name");
+        const distEl = document.getElementById("evp-dir-metric-dist");
+        const timeEl = document.getElementById("evp-dir-metric-time");
+
+        if (fromEl) fromEl.textContent = originNode ? originNode.name : "Origin";
+        if (toEl) toEl.textContent = targetNode.name;
+        if (distEl) distEl.innerHTML = `<i class="fi fi-rr-ruler-triangle"></i> ${result.meters >= 1000 ? (result.meters / 1000).toFixed(1) + " km" : result.meters + " m"}`;
+        if (timeEl) timeEl.innerHTML = `<i class="fi fi-rr-clock"></i> ~${result.minutes} min walk`;
+
+        if (hud) {
+            hud.classList.add("is-visible");
+        }
+    }
+
+    function clearDirectionRoute() {
+        activeDestinationNodeId = null;
+
+        // Clear pin destination styling
+        document.querySelectorAll(".evp-fp-pin").forEach(pin => {
+            pin.classList.remove("is-destination");
+        });
+
+        // Remove route polylines
+        if (activeRouteGlow && leafletMap) {
+            leafletMap.removeLayer(activeRouteGlow);
+            activeRouteGlow = null;
+        }
+        if (activeRouteDash && leafletMap) {
+            leafletMap.removeLayer(activeRouteDash);
+            activeRouteDash = null;
+        }
+        if (activeCalloutMarker && leafletMap) {
+            leafletMap.removeLayer(activeCalloutMarker);
+            activeCalloutMarker = null;
+        }
+
+        // Hide HUD
+        const hud = document.getElementById("evp-fp-dir-hud");
+        if (hud) {
+            hud.classList.remove("is-visible");
+        }
+    }
+
+    // ── Leaflet Interactive Satellite Map Initializer ────────────────────
+    function ensureLeafletInitialized() {
+        if (!window.L) {
+            setTimeout(ensureLeafletInitialized, 80);
+            return;
+        }
+
+        if (!leafletMap) {
+            const mapContainer = document.getElementById("evp-leaflet-map");
+            if (!mapContainer) return;
+
+            leafletMap = L.map(mapContainer, {
+                center: [13.0349, 80.0478],
+                zoom: 17.5,
+                minZoom: 16,
+                maxZoom: 19.5,
+                zoomControl: false,
+                attributionControl: false
+            });
+
+            // Set tile layer (Google Satellite Hybrid by default, identical to screenshot)
+            const tileUrl = activeLayerType === "satellite"
+                ? "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
+                : "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}";
+
+            activeTileLayer = L.tileLayer(tileUrl, {
+                maxZoom: 20,
+                subdomains: ["mt0", "mt1", "mt2", "mt3"]
+            }).addTo(leafletMap);
+
+            // Add all 10 campus markers
+            CAMPUS_NODES.forEach(node => {
+                const marker = createNodeMarker(node);
+                marker.addTo(leafletMap);
+                leafletMarkers[node.id] = marker;
+            });
+
+            // Recenter button
+            const btnRecenter = modal.querySelector("#evp-fp-btn-recenter");
+            if (btnRecenter) {
+                btnRecenter.addEventListener("click", function (e) {
+                    e.stopPropagation();
+                    const targetNode = CAMPUS_NODES.find(n => n.id === activeNodeId);
+                    const center = targetNode ? [targetNode.lat, targetNode.lng] : [13.0349, 80.0478];
+                    leafletMap.flyTo(center, 17.5, { duration: 0.8 });
+                });
+            }
+
+            // Layer switcher buttons
+            const btnHybrid = modal.querySelector("#evp-layer-hybrid");
+            const btnSat = modal.querySelector("#evp-layer-satellite");
+
+            function switchLayer(mode) {
+                if (!leafletMap || activeLayerType === mode) return;
+                activeLayerType = mode;
+                if (activeTileLayer) leafletMap.removeLayer(activeTileLayer);
+
+                const newUrl = mode === "satellite"
+                    ? "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
+                    : "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}";
+
+                activeTileLayer = L.tileLayer(newUrl, {
+                    maxZoom: 20,
+                    subdomains: ["mt0", "mt1", "mt2", "mt3"]
+                }).addTo(leafletMap);
+
+                if (btnHybrid) btnHybrid.classList.toggle("is-active", mode === "hybrid");
+                if (btnSat) btnSat.classList.toggle("is-active", mode === "satellite");
+            }
+
+            if (btnHybrid) btnHybrid.addEventListener("click", () => switchLayer("hybrid"));
+            if (btnSat) btnSat.addEventListener("click", () => switchLayer("satellite"));
+
+            // Custom zoom buttons
+            const btnZoomIn = modal.querySelector("#evp-fp-zoom-in");
+            const btnZoomOut = modal.querySelector("#evp-fp-zoom-out");
+            if (btnZoomIn) btnZoomIn.addEventListener("click", () => leafletMap && leafletMap.zoomIn());
+            if (btnZoomOut) btnZoomOut.addEventListener("click", () => leafletMap && leafletMap.zoomOut());
+        }
+
+        setTimeout(() => {
+            if (leafletMap) {
+                leafletMap.invalidateSize();
+                if (!activeDestinationNodeId) {
+                    const currNode = CAMPUS_NODES.find(n => n.id === activeNodeId);
+                    if (currNode) {
+                        leafletMap.setView([currNode.lat, currNode.lng], 17.5);
+                    } else {
+                        leafletMap.setView([13.0349, 80.0478], 17.5);
+                    }
+                }
+            }
+        }, 220);
     }
 
     // ── Live Camera Radar Cone Tracking Engine ───────────────────────────
@@ -1241,11 +2173,15 @@
         if (btn) btn.classList.add("is-active");
         const popBtn = document.getElementById("popover-btn-sitemap");
         if (popBtn) popBtn.classList.add("is-active");
+
+        // Initialize and center Leaflet interactive satellite map
+        ensureLeafletInitialized();
     }
 
     function closeFloorPlan() {
         isModalOpen = false;
         stopRadarTracking();
+        clearDirectionRoute();
         backdrop.classList.remove("is-visible");
         modal.classList.remove("is-visible");
 
@@ -1270,29 +2206,45 @@
         }
     });
 
-    // Pin clicks
-    modal.querySelectorAll(".evp-fp-pin").forEach(pin => {
-        pin.addEventListener("click", function (e) {
+    // Directions HUD "Explore 360°" button
+    const btnExplore = modal.querySelector("#evp-fp-btn-explore");
+    if (btnExplore) {
+        btnExplore.addEventListener("click", function (e) {
             e.stopPropagation();
-            const id = this.getAttribute("data-id");
-            const node = CAMPUS_NODES.find(n => n.id === id);
-            navigateToNode(node);
+            if (activeDestinationNodeId) {
+                const destNode = CAMPUS_NODES.find(n => n.id === activeDestinationNodeId);
+                clearDirectionRoute();
+                if (destNode) {
+                    navigateToNode(destNode);
+                }
+            }
         });
-    });
+    }
 
-    // Category filter tabs
+    // Directions HUD "Clear Route" button
+    const btnClearRoute = modal.querySelector("#evp-fp-btn-clear");
+    if (btnClearRoute) {
+        btnClearRoute.addEventListener("click", function (e) {
+            e.stopPropagation();
+            clearDirectionRoute();
+        });
+    }
+
+    // Category filter tabs (toggle Leaflet markers smoothly)
     modal.querySelectorAll(".evp-fp-filter-btn").forEach(btn => {
         btn.addEventListener("click", function () {
             modal.querySelectorAll(".evp-fp-filter-btn").forEach(b => b.classList.remove("is-active"));
             this.classList.add("is-active");
 
             activeFilter = this.getAttribute("data-filter");
-            modal.querySelectorAll(".evp-fp-pin").forEach(pin => {
-                const cat = pin.getAttribute("data-cat");
-                if (activeFilter === "all" || cat === activeFilter) {
-                    pin.classList.remove("is-hidden");
+            CAMPUS_NODES.forEach(node => {
+                const marker = leafletMarkers[node.id];
+                if (!marker || !leafletMap) return;
+                const match = activeFilter === "all" || node.category === activeFilter;
+                if (match) {
+                    if (!leafletMap.hasLayer(marker)) leafletMap.addLayer(marker);
                 } else {
-                    pin.classList.add("is-hidden");
+                    if (leafletMap.hasLayer(marker)) leafletMap.removeLayer(marker);
                 }
             });
         });
