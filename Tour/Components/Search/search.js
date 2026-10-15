@@ -765,6 +765,9 @@
       });
       renderList(projectLinks, "");
       setTimeout(function() { input.focus(); }, 70);
+      if (typeof window.evpRetranslate === "function") {
+        setTimeout(window.evpRetranslate, 60);
+      }
       document.dispatchEvent(new CustomEvent("searchActive"));
     } else {
       window.SearchBox.classList.remove("show");

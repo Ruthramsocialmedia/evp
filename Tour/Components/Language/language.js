@@ -580,6 +580,22 @@
         }
     });
 
+    // ── Retrigger Google Translate for dynamic content ──
+    function retriggerGoogleTranslate() {
+        const lang = getCurrentLangFromCookie();
+        if (!lang || lang === "en") return;
+        const combo = document.querySelector(".goog-te-combo");
+        if (combo) {
+            combo.value = "";
+            combo.dispatchEvent(new Event("change"));
+            setTimeout(() => {
+                combo.value = lang;
+                combo.dispatchEvent(new Event("change"));
+            }, 60);
+        }
+    }
+    window.evpRetranslate = retriggerGoogleTranslate;
+
     // ── Expose Globally ──
     window.openLanguage = openLanguage;
     window.closeLanguage = closeLanguage;
@@ -587,7 +603,8 @@
         open: openLanguage,
         close: closeLanguage,
         select: selectLanguage,
-        getCurrent: () => currentLang
+        getCurrent: () => currentLang,
+        retranslate: retriggerGoogleTranslate
     };
 
     // ── Initialize Headless Google Translate Element ──

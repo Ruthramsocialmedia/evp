@@ -675,6 +675,9 @@
         renderSpecs(targetScene);
         backdrop.classList.add("is-open");
         drawer.classList.add("is-open");
+        if (typeof window.evpRetranslate === "function") {
+            setTimeout(window.evpRetranslate, 60);
+        }
     }
 
     function closeSpecs() {

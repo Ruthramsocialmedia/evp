@@ -690,10 +690,21 @@ const EVP_DESTINATIONS = [
         }
 
         #location-container {
-            display: none !important;
+            position: fixed;
+            inset: 0;
+            z-index: 100072;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.32s ease, visibility 0.32s ease;
         }
         #location-container.show {
-            display: flex !important;
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
         }
 
         .location-modal {
@@ -2049,75 +2060,18 @@ const EVP_DESTINATIONS = [
         );
     }
 
-    // ── Render Destination Cards ──────────────────────────────────────
-    function renderDestinations() {
+    // ── Pre-mount all 24 destination cards into DOM ───────────────────
+    function populateInitialDestinations() {
         const grid = document.getElementById("loc-destinations-grid");
-        if (!grid) return;
+        if (!grid || grid.querySelectorAll(".loc-card").length === EVP_DESTINATIONS.length) return;
 
-        let items = EVP_DESTINATIONS.filter((d) => {
-            let matchesCat = false;
-            if (activeCategory === "all") {
-                matchesCat = true;
-            } else if (activeCategory === "indoor") {
-                matchesCat = d.isIndoor === true;
-            } else if (activeCategory === "outdoor") {
-                matchesCat = d.isIndoor === false;
-            } else if (activeCategory === "halls") {
-                matchesCat = d.category === "halls";
-            } else if (activeCategory === "pavilion") {
-                matchesCat = d.category === "pavilion";
-            } else if (activeCategory === "dining") {
-                matchesCat = d.category === "dining";
-            } else if (activeCategory === "parking") {
-                matchesCat = d.category === "parking" || d.category === "gates" || d.category === "grounds" || d.category === "outdoor";
-            } else {
-                matchesCat = d.category === activeCategory;
-            }
-
-            const q = searchQuery.toLowerCase().trim();
-            const matchesSearch = !q ||
-                d.name.toLowerCase().includes(q) ||
-                d.area.toLowerCase().includes(q) ||
-                (d.tags && d.tags.some((t) => t.toLowerCase().includes(q)));
-            return matchesCat && matchesSearch;
-        });
-
-        // Compute live metrics for each item
-        items = items.map((d) => {
-            let dist = null;
-            let eta = null;
-            let dir = "";
-            if (userCoords) {
-                dist = calculateDistance(userCoords.lat, userCoords.lng, d.lat, d.lng);
-                eta = calculateETA(dist);
-                dir = compassDirection(calculateBearing(userCoords.lat, userCoords.lng, d.lat, d.lng));
-            }
-            return { ...d, dist, eta, dir };
-        });
-
-        // Sort if nearest is active
-        if (sortByNearest && userCoords) {
-            items.sort((a, b) => (a.dist || 999999) - (b.dist || 999999));
-        }
-
-        if (items.length === 0) {
-            grid.innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px; color: #64748B;">
-                    <i class="fi fi-rr-search-location" style="font-size: 32px; color: #94A3B8; margin-bottom: 8px; display: block;"></i>
-                    <p style="margin: 0; font-weight: 700; font-size: 15px; color: #131330;">No venue locations found</p>
-                    <p style="margin: 4px 0 0 0; font-size: 13px;">Try searching for "Hall A", "Executive Pavilion", "Food Court", or "Parking".</p>
-                </div>
-            `;
-            return;
-        }
-
-        grid.innerHTML = items.map((d) => {
-            const distLabel = d.dist !== null ? `${formatDistance(d.dist)} • ${d.dir}` : "Direct Route";
-            const etaLabel = d.eta !== null ? formatETA(d.eta) : "Direct Pin";
+        grid.innerHTML = EVP_DESTINATIONS.map((d) => {
+            const distLabel = "Direct Route";
+            const etaLabel = "Direct Pin";
             const navLink = getNavigationUrl(d, userCoords);
 
             return `
-                <div class="loc-card" data-id="${d.id}">
+                <div class="loc-card" data-id="${d.id}" data-category="${d.category}" data-indoor="${d.isIndoor}">
                     <div class="loc-card-header">
                         <div class="loc-card-iconbox"><i class="${d.icon}"></i></div>
                         <span class="loc-card-badge">${d.categoryLabel}</span>
@@ -2175,6 +2129,103 @@ const EVP_DESTINATIONS = [
         });
     }
 
+    // ── Non-Destructive Card Filter & Live Metric Updater ─────────────
+    function renderDestinations() {
+        const grid = document.getElementById("loc-destinations-grid");
+        if (!grid) return;
+        populateInitialDestinations();
+
+        const q = searchQuery.toLowerCase().trim();
+        let visibleCount = 0;
+        const cards = Array.from(grid.querySelectorAll(".loc-card"));
+
+        cards.forEach((card) => {
+            const id = parseInt(card.getAttribute("data-id"), 10);
+            const d = EVP_DESTINATIONS.find((x) => x.id === id);
+            if (!d) return;
+
+            let matchesCat = false;
+            if (activeCategory === "all") {
+                matchesCat = true;
+            } else if (activeCategory === "indoor") {
+                matchesCat = d.isIndoor === true;
+            } else if (activeCategory === "outdoor") {
+                matchesCat = d.isIndoor === false;
+            } else if (activeCategory === "halls") {
+                matchesCat = d.category === "halls";
+            } else if (activeCategory === "pavilion") {
+                matchesCat = d.category === "pavilion";
+            } else if (activeCategory === "dining") {
+                matchesCat = d.category === "dining";
+            } else if (activeCategory === "parking") {
+                matchesCat = d.category === "parking" || d.category === "gates" || d.category === "grounds" || d.category === "outdoor";
+            } else {
+                matchesCat = d.category === activeCategory;
+            }
+
+            const matchesSearch = !q ||
+                d.name.toLowerCase().includes(q) ||
+                d.area.toLowerCase().includes(q) ||
+                (d.tags && d.tags.some((t) => t.toLowerCase().includes(q)));
+
+            const isVisible = matchesCat && matchesSearch;
+            card.style.display = isVisible ? "" : "none";
+            if (isVisible) visibleCount++;
+
+            // Live metrics update without touching title, description, badge, or buttons
+            let dist = null;
+            let eta = null;
+            let dir = "";
+            if (userCoords) {
+                dist = calculateDistance(userCoords.lat, userCoords.lng, d.lat, d.lng);
+                eta = calculateETA(dist);
+                dir = compassDirection(calculateBearing(userCoords.lat, userCoords.lng, d.lat, d.lng));
+            }
+
+            card._distVal = dist !== null ? dist : 999999;
+
+            const distTag = card.querySelector(".loc-dist-tag");
+            const etaTag = card.querySelector(".loc-eta-tag");
+            const navBtn = card.querySelector(".loc-card-btn");
+
+            if (distTag) {
+                const distLabel = dist !== null ? `${formatDistance(dist)} • ${dir}` : "Direct Route";
+                distTag.innerHTML = `<i class="fi fi-rr-marker"></i>${distLabel}`;
+            }
+            if (etaTag) {
+                etaTag.textContent = eta !== null ? formatETA(eta) : "Direct Pin";
+            }
+            if (navBtn) {
+                navBtn.href = getNavigationUrl(d, userCoords);
+            }
+        });
+
+        // Reorder DOM cards if Nearest sort is toggled
+        if (sortByNearest && userCoords) {
+            cards.sort((a, b) => (a._distVal || 999999) - (b._distVal || 999999));
+            cards.forEach((card) => grid.appendChild(card));
+        }
+
+        // Empty state
+        let emptyMsg = document.getElementById("loc-empty-search-msg");
+        if (visibleCount === 0) {
+            if (!emptyMsg) {
+                emptyMsg = document.createElement("div");
+                emptyMsg.id = "loc-empty-search-msg";
+                emptyMsg.style.cssText = "grid-column: 1 / -1; text-align: center; padding: 40px 20px; color: #64748B;";
+                emptyMsg.innerHTML = `
+                    <i class="fi fi-rr-search-location" style="font-size: 32px; color: #94A3B8; margin-bottom: 8px; display: block;"></i>
+                    <p style="margin: 0; font-weight: 700; font-size: 15px; color: #131330;">No venue locations found</p>
+                    <p style="margin: 4px 0 0 0; font-size: 13px;">Try searching for "Hall A", "Executive Pavilion", "Food Court", or "Parking".</p>
+                `;
+                grid.appendChild(emptyMsg);
+            }
+            emptyMsg.style.display = "";
+        } else if (emptyMsg) {
+            emptyMsg.style.display = "none";
+        }
+    }
+
     // ── Detail Drawer Logic ───────────────────────────────────────────
     function openDetailDrawer(dest) {
         selectedDest = dest;
@@ -2222,9 +2273,33 @@ const EVP_DESTINATIONS = [
             drawerCoords.textContent = `${dest.lat.toFixed(4)}° N, ${dest.lng.toFixed(4)}° E`;
         }
 
-        if (nameEl) nameEl.textContent = dest.name;
-        if (areaEl) areaEl.textContent = dest.area;
-        if (catEl) catEl.textContent = dest.categoryLabel;
+        const grid = document.getElementById("loc-destinations-grid");
+        const card = grid ? grid.querySelector(`[data-id="${dest.id}"]`) : null;
+
+        if (nameEl) {
+            const cardH4 = card ? card.querySelector("h4") : null;
+            if (cardH4 && cardH4.innerHTML && cardH4.textContent.trim() !== dest.name) {
+                nameEl.innerHTML = cardH4.innerHTML;
+            } else {
+                nameEl.textContent = dest.name;
+            }
+        }
+        if (areaEl) {
+            const cardP = card ? card.querySelector("p") : null;
+            if (cardP && cardP.innerHTML && cardP.textContent.trim() !== dest.area) {
+                areaEl.innerHTML = cardP.innerHTML;
+            } else {
+                areaEl.textContent = dest.area;
+            }
+        }
+        if (catEl) {
+            const cardBadge = card ? card.querySelector(".loc-card-badge") : null;
+            if (cardBadge && cardBadge.innerHTML && cardBadge.textContent.trim() !== dest.categoryLabel) {
+                catEl.innerHTML = cardBadge.innerHTML;
+            } else {
+                catEl.textContent = dest.categoryLabel;
+            }
+        }
 
         if (distEl) distEl.textContent = dist !== null ? `${formatDistance(dist)} ${dir}` : "--";
         if (etaEl) etaEl.textContent = eta !== null ? formatETA(eta) : "--";
@@ -2423,6 +2498,9 @@ const EVP_DESTINATIONS = [
             backdrop.classList.add("show");
             acquireUserLocation();
             renderDestinations();
+            if (typeof window.evpRetranslate === "function") {
+                setTimeout(window.evpRetranslate, 60);
+            }
         } else {
             container.classList.remove("show");
             backdrop.classList.remove("show");
