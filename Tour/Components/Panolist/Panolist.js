@@ -1378,7 +1378,16 @@
         updateActiveScene();
         if (backdrop) backdrop.classList.add("is-open");
         if (drawer) drawer.classList.add("is-open");
-        renderGrid(allPanoramas);
+        if (grid && grid.children && grid.children.length === allPanoramas.length) {
+            const cards = grid.querySelectorAll(".pcis-scene-card");
+            cards.forEach((card, idx) => {
+                const pano = allPanoramas[idx];
+                const isCurrent = pano && pano.id === currentSceneId;
+                card.classList.toggle("is-current", Boolean(isCurrent));
+            });
+        } else {
+            renderGrid(allPanoramas);
+        }
         document.dispatchEvent(new CustomEvent("panoListOpened"));
         document.dispatchEvent(new CustomEvent("menuItemActivate", { detail: { id: "menu-panorama" } }));
     }
@@ -1578,7 +1587,12 @@
             const label = sceneIndex >= 0 ? allPanoramas[sceneIndex].label : (data.label || "EVP Trade & Convention Centre");
 
             currentSceneId = id;
-            if (nameEl) nameEl.textContent = label;
+            if (nameEl && !document.getElementById("evp-stepper-group")) {
+                if (nameEl.getAttribute("data-english-name") !== label) {
+                    nameEl.setAttribute("data-english-name", label);
+                    nameEl.textContent = label;
+                }
+            }
             if (countEl) {
                 countEl.textContent = sceneIndex >= 0
                     ? `${String(sceneIndex + 1).padStart(2, '0')} / ${String(allPanoramas.length).padStart(2, '0')}`
@@ -1634,6 +1648,9 @@
             });
 
             updateActiveScene();
+            if (grid && (!grid.children || grid.children.length === 0)) {
+                renderGrid(allPanoramas);
+            }
 
             // Event-driven listener to eliminate laggy 800ms main-thread polling
             if (window.tour && typeof window.tour.on === "function") {

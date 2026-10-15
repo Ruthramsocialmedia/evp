@@ -966,8 +966,9 @@
 
         // 2. HUD spatial location element (Direct source of truth for current scene)
         const locEl = document.getElementById("spatial-location-name");
-        if (locEl && locEl.textContent && locEl.textContent.trim()) {
-            return locEl.textContent.trim();
+        if (locEl) {
+            const val = (locEl.getAttribute("data-english-name") || locEl.textContent || "").trim();
+            if (val) return val;
         }
 
         // 3. 3DVista viewer media fallback

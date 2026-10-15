@@ -142,8 +142,8 @@
 
         // Save active indoor scene name before switching
         const locEl = document.getElementById("spatial-location-name");
-        if (locEl && !isPovActive && locEl.textContent) {
-            lastIndoorSceneName = locEl.textContent.trim();
+        if (locEl && !isPovActive) {
+            lastIndoorSceneName = (locEl.getAttribute("data-english-name") || locEl.textContent || "").trim();
         }
 
         currentPovLocation = loc;

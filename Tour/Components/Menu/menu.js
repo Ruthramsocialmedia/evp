@@ -1296,8 +1296,9 @@
             }
         } catch (e) {}
         const locEl = document.getElementById("spatial-location-name");
-        if (locEl && locEl.textContent) {
-            return locEl.textContent.trim();
+        if (locEl) {
+            const val = (locEl.getAttribute("data-english-name") || locEl.textContent || "").trim();
+            if (val) return val;
         }
         return "";
     }

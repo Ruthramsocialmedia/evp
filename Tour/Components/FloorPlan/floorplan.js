@@ -1694,8 +1694,9 @@
         // 2. Check 3DVista Active Media
         let currentLabel = "";
         const locEl = document.getElementById("spatial-location-name");
-        if (locEl && locEl.textContent) {
-            currentLabel = locEl.textContent.trim().toLowerCase();
+        if (locEl) {
+            const raw = locEl.getAttribute("data-english-name") || locEl.textContent;
+            if (raw) currentLabel = raw.trim().toLowerCase();
         }
 
         if (!currentLabel) {

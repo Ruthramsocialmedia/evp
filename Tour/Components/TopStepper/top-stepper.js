@@ -646,6 +646,7 @@
         document.body.appendChild(dropdown);
     }
     const dropdownScroll = document.getElementById("evp-tour-dropdown-scroll");
+    ensureDropdownPopulated();
 
     // ── Find Active Scene ──────────────────────────────────────────────
     function findActiveScene() {
@@ -734,11 +735,22 @@
 
         const nameEl = document.getElementById("spatial-location-name");
         if (nameEl && scene) {
-            nameEl.textContent = scene.label;
+            const currentEnglish = nameEl.getAttribute("data-english-name");
+            if (currentEnglish !== scene.label) {
+                nameEl.setAttribute("data-english-name", scene.label);
+                nameEl.setAttribute("data-scene-id", String(scene.id));
+
+                const dropTitle = dropdownScroll ? dropdownScroll.querySelector(`[data-scene-id="${scene.id}"] .evp-tour-dropdown-title`) : null;
+                if (dropTitle && dropTitle.innerHTML && dropTitle.textContent.trim() !== scene.label) {
+                    nameEl.innerHTML = dropTitle.innerHTML;
+                } else {
+                    nameEl.textContent = scene.label;
+                }
+            }
         }
 
         if (isDropdownOpen) {
-            renderDropdown();
+            syncDropdownSelection();
         }
     }
 
@@ -848,8 +860,13 @@
         }
     }
 
-    function renderDropdown() {
+    function ensureDropdownPopulated() {
         if (!dropdownScroll) return;
+        if (dropdownScroll.children.length === tourScenes.length) {
+            syncDropdownSelection();
+            return;
+        }
+
         dropdownScroll.innerHTML = "";
 
         tourScenes.forEach((scene, idx) => {
@@ -859,6 +876,7 @@
             item.className = "evp-tour-dropdown-item" + (isCurrent ? " is-selected" : "");
             item.setAttribute("role", "option");
             item.setAttribute("aria-selected", isCurrent ? "true" : "false");
+            item.setAttribute("data-scene-id", String(scene.id));
 
             const iconClass = scene.isIndoor ? "fi fi-sr-tour-virtual" : "fi fi-sr-street-view";
             const typeLabel = scene.isIndoor ? "360° Virtual Tour" : "Outdoor • Google Street View";
@@ -871,7 +889,7 @@
                 </div>
                 <span class="evp-tour-dropdown-num">${String(idx + 1).padStart(2, '0')}</span>
                 <div class="evp-tour-dropdown-col">
-                    <span class="evp-tour-dropdown-title">${scene.label}</span>
+                    <span class="evp-tour-dropdown-title" data-scene-id="${scene.id}">${scene.label}</span>
                     <span class="evp-tour-dropdown-sub">${typeLabel}</span>
                 </div>
                 <span class="evp-tour-dropdown-item-check" aria-hidden="true"><i class="fi fi-sr-check"></i></span>
@@ -885,6 +903,22 @@
 
             dropdownScroll.appendChild(item);
         });
+    }
+
+    function syncDropdownSelection() {
+        if (!dropdownScroll) return;
+        const items = dropdownScroll.querySelectorAll(".evp-tour-dropdown-item");
+        items.forEach(item => {
+            const sid = item.getAttribute("data-scene-id");
+            const isCurrent = currentScene && String(currentScene.id) === sid;
+            item.classList.toggle("is-selected", Boolean(isCurrent));
+            item.setAttribute("aria-selected", isCurrent ? "true" : "false");
+        });
+    }
+
+    function renderDropdown() {
+        ensureDropdownPopulated();
+        syncDropdownSelection();
     }
 
     // ── Mount & Replace Stepper Controls ───────────────────────────────
@@ -1023,10 +1057,20 @@
                     const activePov = typeof window.getActiveGsvPovLocation === "function" ? window.getActiveGsvPovLocation() : null;
                     const match = activePov ? tourScenes.find(s => !s.isIndoor && (s.povId === activePov.id || (activePov.name && s.label.toLowerCase() === activePov.name.toLowerCase()))) : null;
                     const expected = match ? match.label : (activePov ? activePov.name : "");
-                    if (expected && nameEl.textContent.trim() !== expected.trim()) {
-                        isSyncing = true;
-                        nameEl.textContent = expected;
-                        isSyncing = false;
+                    if (expected) {
+                        const currentEnglish = nameEl.getAttribute("data-english-name");
+                        if (currentEnglish !== expected) {
+                            isSyncing = true;
+                            nameEl.setAttribute("data-english-name", expected);
+                            if (match) nameEl.setAttribute("data-scene-id", String(match.id));
+                            const dropTitle = match && dropdownScroll ? dropdownScroll.querySelector(`[data-scene-id="${match.id}"] .evp-tour-dropdown-title`) : null;
+                            if (dropTitle && dropTitle.innerHTML && dropTitle.textContent.trim() !== expected) {
+                                nameEl.innerHTML = dropTitle.innerHTML;
+                            } else {
+                                nameEl.textContent = expected;
+                            }
+                            isSyncing = false;
+                        }
                     }
                 }
             });
@@ -1104,6 +1148,19 @@
 
     // Periodic safety sync (keeps stepper strictly accurate)
     setInterval(updateStepperUI, 2500);
+
+    // Listen for language changes to update active scene title if needed
+    document.addEventListener("evpLanguageChanged", function () {
+        setTimeout(() => {
+            if (!currentScene) return;
+            const nameEl = document.getElementById("spatial-location-name");
+            if (!nameEl) return;
+            const dropTitle = dropdownScroll ? dropdownScroll.querySelector(`[data-scene-id="${currentScene.id}"] .evp-tour-dropdown-title`) : null;
+            if (dropTitle && dropTitle.innerHTML && dropTitle.textContent.trim() !== currentScene.label) {
+                nameEl.innerHTML = dropTitle.innerHTML;
+            }
+        }, 350);
+    });
 
     // Listen for Panolist DOM mount event for immediate attachment
     document.addEventListener("panolistMounted", initStepper);

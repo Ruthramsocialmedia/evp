@@ -550,6 +550,7 @@
         currentLang = code;
         setActiveCard(code);
         closeLanguage();
+        document.dispatchEvent(new CustomEvent("evpLanguageChanged", { detail: { lang: code } }));
     }
 
     // ── Open / Close Controller ──
