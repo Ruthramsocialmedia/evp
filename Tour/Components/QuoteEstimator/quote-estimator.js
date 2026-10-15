@@ -2,6 +2,7 @@
 //  EVP TRADE & CONVENTION CENTRE — EVENT COST & HALL RENTAL ESTIMATOR
 //  Interactive Instant Quote Calculator with Real-time Capacity Matching
 //  and Direct WhatsApp Commercial Booking Lead Handoff.
+//  Note: All figures, dimensions, and capacities are approximate estimates.
 // ═══════════════════════════════════════════════════════════════════════
 
 (function () {
@@ -18,7 +19,7 @@
             sqm: 5030,
             baseRatePerDay: 500000, // ₹ 5.0 Lakhs / day base
             maxCapacity: 5000,
-            badge: "Pillarless Mega Hall (54,144 sq.ft)",
+            badge: "Pillarless Mega Hall (~54,144 sq.ft)",
             icon: "fi fi-sr-building"
         },
         "hall-b": {
@@ -28,7 +29,7 @@
             sqm: 5030,
             baseRatePerDay: 500000,
             maxCapacity: 5000,
-            badge: "Pillarless Mega Hall (54,144 sq.ft)",
+            badge: "Pillarless Mega Hall (~54,144 sq.ft)",
             icon: "fi fi-sr-building"
         },
         "hall-c": {
@@ -38,7 +39,7 @@
             sqm: 5030,
             baseRatePerDay: 475000,
             maxCapacity: 3500,
-            badge: "252 Rigging Points (54,144 sq.ft)",
+            badge: "252 Rigging Points (~54,144 sq.ft)",
             icon: "fi fi-sr-building"
         },
         "hall-d": {
@@ -48,7 +49,7 @@
             sqm: 4437,
             baseRatePerDay: 425000,
             maxCapacity: 2500,
-            badge: "Widest 45m Clear Span (47,762 sq.ft)",
+            badge: "45m Clear Span (~47,762 sq.ft)",
             icon: "fi fi-sr-building"
         },
         "food-court": {
@@ -58,17 +59,17 @@
             sqm: 2450,
             baseRatePerDay: 175000,
             maxCapacity: 1200,
-            badge: "Dining & Catering Hub (26,364 sq.ft)",
+            badge: "Dining Hub (~26,364 sq.ft)",
             icon: "fi fi-sr-restaurant"
         },
         "vip-pavilion": {
             id: "vip-pavilion",
-            name: "Executive VIP Pavilion & Boardrooms",
+            name: "Executive VIP Pavilion & Suites",
             sqft: 6500,
             sqm: 604,
             baseRatePerDay: 75000,
             maxCapacity: 150,
-            badge: "VIP Delegation Wing & Suites",
+            badge: "VIP Wing (~6,500 sq.ft)",
             icon: "fi fi-sr-crown"
         }
     };
@@ -79,33 +80,37 @@
             id: "ac",
             name: "24/7 Central HVAC Air-Conditioning",
             ratePerDay: 60000,
+            approxRateText: "Approx. ₹60,000/day",
             icon: "fi fi-sr-snowflake"
         },
         "power": {
             id: "power",
             name: "100% Heavy DG Power Backup & Sync",
             ratePerDay: 45000,
+            approxRateText: "Approx. ₹45,000/day",
             icon: "fi fi-sr-bolt"
         },
         "valet": {
             id: "valet",
             name: "Dedicated Valet & Traffic Marshals",
             ratePerDay: 25000,
+            approxRateText: "Approx. ₹25,000/day",
             icon: "fi fi-sr-car"
         },
         "cleaning": {
             id: "cleaning",
             name: "Post-Event Industrial Sanitization",
             ratePerDay: 20000,
+            approxRateText: "Approx. ₹20,000/day",
             icon: "fi fi-sr-sparkles"
         }
     };
 
     // ── Multi-Day Discount Curves ──
     function getDurationDiscount(days) {
-        if (days >= 4) return 0.15; // 15% discount for 4+ days
-        if (days === 3) return 0.10; // 10% discount for 3 days
-        if (days === 2) return 0.05; // 5% discount for 2 days
+        if (days >= 4) return 0.15; // ~15% discount for 4+ days
+        if (days === 3) return 0.10; // ~10% discount for 3 days
+        if (days === 2) return 0.05; // ~5% discount for 2 days
         return 0;
     }
 
@@ -113,21 +118,25 @@
     const styleEl = document.createElement("style");
     styleEl.id = "evp-quote-estimator-styles";
     styleEl.textContent = `
-        /* ── Overlay & Glass Backdrop ── */
+        /* ═════════════════════════════════════════════════════════════
+           EVP QUOTE ESTIMATOR — Clean, Neat & Frosted Luxury Backdrop
+           ═════════════════════════════════════════════════════════════ */
+
+        /* ── Overlay & Frosted Glass Backdrop (Matches Contact Us 100%) ── */
         .evp-quote-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(19, 19, 48, 0.65);
-            -webkit-backdrop-filter: blur(14px);
-            backdrop-filter: blur(14px);
+            background: rgba(19, 19, 48, 0.42);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            backdrop-filter: blur(24px) saturate(180%);
             z-index: 100075;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 16px;
             box-sizing: border-box;
             opacity: 0;
             visibility: hidden;
@@ -141,23 +150,21 @@
             pointer-events: auto;
         }
 
-        /* ── Modal Container ── */
+        /* ── Modal Window ── */
         .evp-quote-modal {
-            width: min(780px, 92vw);
+            width: min(720px, 94vw);
             max-height: 90vh;
-            background: rgba(255, 255, 255, 0.96);
-            -webkit-backdrop-filter: blur(28px) saturate(190%);
-            backdrop-filter: blur(28px) saturate(190%);
-            border: 1px solid rgba(255, 255, 255, 0.95);
-            border-radius: 24px;
+            background: #FFFFFF;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.85);
             box-shadow: 
-                0 4px 16px rgba(19, 19, 48, 0.08),
-                0 24px 64px rgba(19, 19, 48, 0.28),
-                inset 0 1px 1px rgba(255, 255, 255, 1);
+                0 32px 80px -16px rgba(19, 19, 48, 0.32),
+                0 0 0 1px rgba(19, 19, 48, 0.08);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            transform: scale(0.93) translateY(18px);
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            transform: scale(0.95) translateY(16px);
             transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
         }
         .evp-quote-overlay.is-open .evp-quote-modal {
@@ -166,50 +173,68 @@
 
         /* ── Header ── */
         .evp-quote-header {
-            padding: 16px 22px 14px;
+            padding: 16px 20px 14px;
             background: #FFFFFF;
-            border-bottom: 1px solid rgba(19, 19, 48, 0.06);
+            border-bottom: 1px solid #EEF2F6;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 12px;
             flex-shrink: 0;
         }
         .evp-quote-header-left {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 4px;
+            min-width: 0;
         }
         .evp-quote-badge-row {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            flex-wrap: wrap;
         }
         .evp-quote-pill {
-            background: rgba(255, 183, 3, 0.16);
-            color: #B45309;
-            border: 1px solid rgba(255, 183, 3, 0.45);
+            background: #F1F5F9;
+            color: #334155;
+            border: 1px solid #E2E8F0;
             font-size: 10px;
-            font-weight: 800;
+            font-weight: 700;
             letter-spacing: 0.5px;
             text-transform: uppercase;
-            padding: 2px 7px;
-            border-radius: 8px;
+            padding: 3px 8px;
+            border-radius: 6px;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
+        }
+        .evp-quote-pill i {
+            color: #D97706;
+            font-size: 11px;
+        }
+        .evp-quote-aprox-badge {
+            font-size: 10.5px;
+            color: #0284C7;
+            background: #E0F2FE;
+            border: 1px solid #BAE6FD;
+            padding: 2px 7px;
+            border-radius: 6px;
+            font-weight: 700;
         }
         .evp-quote-title {
             margin: 0;
             font-size: 18px;
             font-weight: 800;
             color: #131330;
-            letter-spacing: -0.2px;
+            letter-spacing: -0.3px;
+            line-height: 1.25;
         }
         .evp-quote-subtitle {
             margin: 0;
             font-size: 11.5px;
-            color: #5C5C7A;
+            color: #64748B;
             font-weight: 500;
+            line-height: 1.35;
         }
 
         /* ── Standard EVP Red Circular Close Button (360° Hover Spin) ── */
@@ -252,89 +277,107 @@
 
         /* ── Scrollable Body Area ── */
         .evp-quote-body {
-            padding: 16px 22px;
+            padding: 16px 20px 20px;
             overflow-y: auto;
             flex: 1;
             display: flex;
             flex-direction: column;
             gap: 16px;
+            background: #FAFBFD;
         }
         .evp-quote-body::-webkit-scrollbar {
-            width: 6px;
+            width: 5px;
         }
         .evp-quote-body::-webkit-scrollbar-thumb {
             background: rgba(19, 19, 48, 0.15);
             border-radius: 6px;
         }
 
-        /* ── Section Titles ── */
+        /* ── Section Header ── */
         .evp-quote-sec-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 8px;
+            margin-bottom: 7px;
         }
         .evp-quote-sec-title {
-            font-size: 12.5px;
+            font-size: 12px;
             font-weight: 800;
             color: #131330;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
+            letter-spacing: 0.3px;
             display: flex;
             align-items: center;
             gap: 6px;
         }
-        .evp-quote-sec-title i {
-            color: #FFB703;
-            font-size: 13px;
+        .evp-quote-step-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #131330;
+            color: #FFFFFF;
+            font-size: 10px;
+            font-weight: 800;
+        }
+        .evp-quote-sec-hint {
+            font-size: 11px;
+            color: #64748B;
+            font-weight: 600;
         }
 
-        /* ── Event Type Chips ── */
+        /* ── Step 1: Event Type Segmented Strip ── */
         .evp-quote-event-types {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+            gap: 6px;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 4px;
         }
         .evp-quote-type-btn {
-            background: #F8F9FC;
-            border: 1.5px solid rgba(19, 19, 48, 0.08);
-            border-radius: 12px;
-            padding: 9px 8px;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            padding: 8px 6px;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 5px;
+            gap: 6px;
             cursor: pointer;
-            transition: all 180ms ease;
+            transition: all 160ms ease;
             text-align: center;
-        }
-        .evp-quote-type-btn:hover {
-            border-color: #FFB703;
-            background: #FFFFFF;
-            transform: translateY(-1px);
-        }
-        .evp-quote-type-btn.is-active {
-            background: #131330;
-            border-color: #131330;
-            color: #FFFFFF;
-            box-shadow: 0 4px 12px rgba(19, 19, 48, 0.15);
-        }
-        .evp-quote-type-btn.is-active i {
-            color: #FFB703;
+            font-family: inherit;
         }
         .evp-quote-type-btn i {
-            font-size: 18px;
-            color: #5C5C7A;
-            transition: color 180ms ease;
+            font-size: 13px;
+            color: #64748B;
+            transition: color 160ms ease;
         }
         .evp-quote-type-btn span {
             font-size: 11px;
             font-weight: 700;
-            line-height: 1.2;
+            color: #475569;
+            white-space: nowrap;
+        }
+        .evp-quote-type-btn:hover {
+            background: #F8FAFC;
+        }
+        .evp-quote-type-btn.is-active {
+            background: #131330;
+            border-color: #131330;
+            box-shadow: 0 2px 6px rgba(19, 19, 48, 0.12);
+        }
+        .evp-quote-type-btn.is-active i {
+            color: #FFB703;
+        }
+        .evp-quote-type-btn.is-active span {
+            color: #FFFFFF;
         }
 
-        /* ── Facilities Grid ── */
+        /* ── Step 2: Facilities Grid ── */
         .evp-quote-facilities {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -342,29 +385,31 @@
         }
         .evp-quote-fac-card {
             background: #FFFFFF;
-            border: 1.5px solid rgba(19, 19, 48, 0.08);
+            border: 1.5px solid #E2E8F0;
             border-radius: 12px;
-            padding: 9px 12px;
+            padding: 10px 12px;
             display: flex;
             align-items: center;
             gap: 10px;
             cursor: pointer;
-            transition: all 180ms ease;
+            transition: all 160ms ease;
             user-select: none;
+            box-shadow: 0 1px 2px rgba(19, 19, 48, 0.02);
         }
         .evp-quote-fac-card:hover {
-            border-color: #FFB703;
+            border-color: #CBD5E1;
             background: #FDFDFE;
         }
         .evp-quote-fac-card.is-selected {
-            border-color: #10B981;
-            background: rgba(16, 185, 129, 0.04);
+            border-color: #059669;
+            background: rgba(5, 150, 105, 0.03);
+            box-shadow: 0 2px 6px rgba(5, 150, 105, 0.08);
         }
         .evp-quote-checkbox {
             width: 18px;
             height: 18px;
             border-radius: 5px;
-            border: 2px solid rgba(19, 19, 48, 0.2);
+            border: 1.5px solid #CBD5E1;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -373,8 +418,8 @@
             transition: all 160ms ease;
         }
         .evp-quote-fac-card.is-selected .evp-quote-checkbox {
-            background: #10B981;
-            border-color: #10B981;
+            background: #059669;
+            border-color: #059669;
             color: #FFFFFF;
         }
         .evp-quote-checkbox i {
@@ -390,7 +435,7 @@
         .evp-quote-fac-info {
             display: flex;
             flex-direction: column;
-            gap: 1px;
+            gap: 2px;
             min-width: 0;
             flex: 1;
         }
@@ -404,19 +449,20 @@
         }
         .evp-quote-fac-meta {
             font-size: 10px;
-            color: #5C5C7A;
+            color: #64748B;
             font-weight: 600;
         }
 
-        /* ── Attendance & Duration Controls ── */
+        /* ── Step 3: Attendance & Duration Controls ── */
         .evp-quote-slider-row {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            background: #F8F9FC;
-            border: 1px solid rgba(19, 19, 48, 0.06);
-            border-radius: 14px;
-            padding: 12px 16px;
+            gap: 10px;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 12px 14px;
+            box-shadow: 0 1px 2px rgba(19, 19, 48, 0.02);
         }
         .evp-quote-slider-labels {
             display: flex;
@@ -424,19 +470,18 @@
             justify-content: space-between;
         }
         .evp-quote-slider-value {
-            font-size: 15px;
-            font-weight: 800;
-            color: #131330;
             display: flex;
             align-items: center;
             gap: 6px;
         }
         .evp-quote-slider-value span {
-            color: #B45309;
-            background: rgba(255, 183, 3, 0.16);
-            padding: 2px 7px;
+            color: #131330;
+            background: #F1F5F9;
+            border: 1px solid #E2E8F0;
+            padding: 3px 8px;
             border-radius: 6px;
-            font-size: 13px;
+            font-size: 12.5px;
+            font-weight: 800;
         }
         .evp-quote-range {
             width: 100%;
@@ -445,15 +490,15 @@
             border-radius: 6px;
             background: #E2E8F0;
             outline: none;
-            margin: 6px 0;
+            margin: 4px 0;
         }
         .evp-quote-range::-webkit-slider-thumb {
             -webkit-appearance: none;
             width: 18px;
             height: 18px;
             border-radius: 50%;
-            background: #FFB703;
-            border: 2px solid #FFFFFF;
+            background: #131330;
+            border: 2px solid #FFB703;
             box-shadow: 0 2px 6px rgba(19, 19, 48, 0.25);
             cursor: pointer;
             transition: transform 140ms ease;
@@ -466,33 +511,34 @@
         .evp-quote-days-row {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-top: 4px;
+            gap: 6px;
         }
         .evp-quote-day-chip {
             flex: 1;
-            padding: 6px 4px;
-            background: #FFFFFF;
-            border: 1.5px solid rgba(19, 19, 48, 0.08);
+            padding: 7px 4px;
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
             border-radius: 8px;
             font-size: 11px;
             font-weight: 700;
-            color: #5C5C7A;
+            color: #475569;
             text-align: center;
             cursor: pointer;
             transition: all 160ms ease;
+            font-family: inherit;
         }
         .evp-quote-day-chip:hover {
-            border-color: #FFB703;
+            border-color: #CBD5E1;
             color: #131330;
         }
         .evp-quote-day-chip.is-active {
             background: #131330;
             border-color: #131330;
             color: #FFFFFF;
+            box-shadow: 0 2px 6px rgba(19, 19, 48, 0.12);
         }
 
-        /* ── Add-ons Checklist ── */
+        /* ── Step 4: Add-ons Checklist ── */
         .evp-quote-addons {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -500,49 +546,65 @@
         }
         .evp-quote-addon-chip {
             background: #FFFFFF;
-            border: 1.5px solid rgba(19, 19, 48, 0.08);
-            border-radius: 10px;
-            padding: 8px 10px;
+            border: 1.5px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 9px 12px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             cursor: pointer;
             transition: all 160ms ease;
             user-select: none;
+            box-shadow: 0 1px 2px rgba(19, 19, 48, 0.02);
         }
         .evp-quote-addon-chip:hover {
-            border-color: #FFB703;
+            border-color: #CBD5E1;
+            background: #FDFDFE;
         }
         .evp-quote-addon-chip.is-active {
-            border-color: #3B82F6;
-            background: rgba(59, 130, 246, 0.04);
+            border-color: #059669;
+            background: rgba(5, 150, 105, 0.03);
+            box-shadow: 0 2px 6px rgba(5, 150, 105, 0.08);
         }
         .evp-quote-addon-chip.is-active .evp-quote-checkbox {
-            background: #3B82F6;
-            border-color: #3B82F6;
+            background: #059669;
+            border-color: #059669;
             color: #FFFFFF;
         }
         .evp-quote-addon-chip.is-active .evp-quote-checkbox i {
             opacity: 1;
             transform: scale(1);
         }
+        .evp-quote-addon-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            min-width: 0;
+            flex: 1;
+        }
         .evp-quote-addon-text {
-            font-size: 11px;
-            font-weight: 700;
+            font-size: 11.5px;
+            font-weight: 800;
             color: #131330;
-            line-height: 1.2;
+            line-height: 1.25;
+        }
+        .evp-quote-addon-rate {
+            font-size: 10px;
+            color: #64748B;
+            font-weight: 600;
         }
 
-        /* ── Dynamic Summary Result Box ── */
+        /* ── Step 5: Dynamic Summary Result Box ── */
         .evp-quote-summary-box {
             background: linear-gradient(135deg, #131330 0%, #1A1A40 100%);
-            border-radius: 16px;
-            padding: 14px 18px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 14px 16px;
             color: #FFFFFF;
             display: flex;
             flex-direction: column;
             gap: 10px;
-            box-shadow: 0 8px 24px rgba(19, 19, 48, 0.25);
+            box-shadow: 0 8px 24px rgba(19, 19, 48, 0.22);
         }
         .evp-quote-metrics-row {
             display: flex;
@@ -555,17 +617,17 @@
         .evp-quote-metric-item {
             display: flex;
             flex-direction: column;
-            gap: 1px;
+            gap: 2px;
         }
         .evp-quote-metric-sub {
             font-size: 10px;
             color: #94A3B8;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.4px;
         }
         .evp-quote-metric-val {
-            font-size: 13.5px;
+            font-size: 13px;
             font-weight: 800;
             color: #FFFFFF;
         }
@@ -595,11 +657,12 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
+            gap: 12px;
         }
         .evp-quote-price-label {
             display: flex;
             flex-direction: column;
+            gap: 2px;
         }
         .evp-quote-price-title {
             font-size: 11px;
@@ -611,11 +674,10 @@
         .evp-quote-price-disclaimer {
             font-size: 9.5px;
             color: #94A3B8;
-            line-height: 1.25;
-            margin-top: 2px;
+            line-height: 1.3;
         }
         .evp-quote-price-val {
-            font-size: 21px;
+            font-size: 20px;
             font-weight: 800;
             color: #FFFFFF;
             letter-spacing: -0.3px;
@@ -623,7 +685,7 @@
             text-align: right;
         }
         .evp-quote-price-val small {
-            font-size: 11px;
+            font-size: 10.5px;
             color: #94A3B8;
             font-weight: 600;
             display: block;
@@ -631,9 +693,9 @@
 
         /* ── Footer Actions ── */
         .evp-quote-footer {
-            padding: 12px 22px 14px;
+            padding: 12px 20px 14px;
             background: #FFFFFF;
-            border-top: 1px solid rgba(19, 19, 48, 0.06);
+            border-top: 1px solid #EEF2F6;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -644,9 +706,9 @@
             background: #25D366;
             color: #FFFFFF;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             padding: 10px 16px;
-            font-family: 'Plus Jakarta Sans', sans-serif !important;
+            font-family: inherit;
             font-size: 13px;
             font-weight: 800;
             cursor: pointer;
@@ -655,14 +717,14 @@
             justify-content: center;
             gap: 8px;
             transition: all 180ms ease;
-            box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
+            box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
             text-decoration: none;
             white-space: nowrap;
         }
         .evp-quote-btn-whatsapp:hover {
             background: #20BA5A;
             transform: translateY(-1px);
-            box-shadow: 0 6px 18px rgba(37, 211, 102, 0.45);
+            box-shadow: 0 6px 18px rgba(37, 211, 102, 0.4);
         }
         .evp-quote-btn-whatsapp i {
             font-size: 17px;
@@ -670,11 +732,12 @@
 
         .evp-quote-btn-copy {
             flex: 1;
-            background: #F1F5F9;
+            background: #F8FAFC;
             color: #131330;
-            border: 1px solid rgba(19, 19, 48, 0.08);
-            border-radius: 12px;
+            border: 1px solid #E2E8F0;
+            border-radius: 10px;
             padding: 10px 14px;
+            font-family: inherit;
             font-size: 12px;
             font-weight: 700;
             cursor: pointer;
@@ -686,7 +749,8 @@
             white-space: nowrap;
         }
         .evp-quote-btn-copy:hover {
-            background: #E2E8F0;
+            background: #F1F5F9;
+            border-color: #CBD5E1;
         }
 
         /* Toast */
@@ -720,12 +784,12 @@
         /* ── Mobile Responsiveness ── */
         @media (max-width: 768px) {
             .evp-quote-modal {
-                width: 94vw !important;
-                max-height: 94vh !important;
-                border-radius: 18px !important;
+                width: 95vw !important;
+                max-height: 92vh !important;
+                border-radius: 16px !important;
             }
             .evp-quote-header {
-                padding: 12px 16px 10px !important;
+                padding: 12px 16px !important;
             }
             .evp-quote-title {
                 font-size: 16px !important;
@@ -736,16 +800,13 @@
             }
             .evp-quote-event-types {
                 grid-template-columns: repeat(2, 1fr) !important;
-                gap: 6px !important;
+                gap: 4px !important;
             }
             .evp-quote-type-btn {
-                padding: 7px 6px !important;
-            }
-            .evp-quote-type-btn i {
-                font-size: 15px !important;
+                padding: 7px 4px !important;
             }
             .evp-quote-type-btn span {
-                font-size: 10px !important;
+                font-size: 10.5px !important;
             }
             .evp-quote-facilities {
                 grid-template-columns: 1fr !important;
@@ -759,7 +820,7 @@
                 padding: 12px 14px !important;
             }
             .evp-quote-price-val {
-                font-size: 18px !important;
+                font-size: 17px !important;
             }
             .evp-quote-footer {
                 padding: 10px 14px 12px !important;
@@ -788,11 +849,11 @@
             <div class="evp-quote-header">
                 <div class="evp-quote-header-left">
                     <div class="evp-quote-badge-row">
-                        <span class="evp-quote-pill"><i class="fi fi-sr-calculator"></i> Instant Quote Calculator</span>
-                        <span style="font-size: 11px; color:#5C5C7A; font-weight:600;">EVP Commercial Estimator</span>
+                        <span class="evp-quote-pill"><i class="fi fi-sr-calculator"></i> Approximate Estimator</span>
+                        <span class="evp-quote-aprox-badge">Indicative Details</span>
                     </div>
                     <h2 class="evp-quote-title">Venue Cost &amp; Rental Estimator</h2>
-                    <p class="evp-quote-subtitle">Configure halls, guest count, and duration for an instant ballpark budget</p>
+                    <p class="evp-quote-subtitle">All capacities, dimensions &amp; pricing are approximate estimates for event planning</p>
                 </div>
                 <button type="button" class="evp-quote-close-btn" id="evp-quote-close-btn" aria-label="Close quote estimator">
                     <i class="fi fi-rr-cross-small" aria-hidden="true"></i>
@@ -804,7 +865,7 @@
                 <!-- 1. Event Type -->
                 <div class="evp-quote-section">
                     <div class="evp-quote-sec-header">
-                        <span class="evp-quote-sec-title"><i class="fi fi-sr-bookmark"></i> 1. Select Event Type</span>
+                        <span class="evp-quote-sec-title"><span class="evp-quote-step-num">1</span> Event Category</span>
                     </div>
                     <div class="evp-quote-event-types" id="evp-quote-event-types">
                         <button type="button" class="evp-quote-type-btn is-active" data-type="Trade Expo">
@@ -813,11 +874,11 @@
                         </button>
                         <button type="button" class="evp-quote-type-btn" data-type="Corporate Summit">
                             <i class="fi fi-sr-briefcase"></i>
-                            <span>Corporate Summit</span>
+                            <span>Corporate</span>
                         </button>
                         <button type="button" class="evp-quote-type-btn" data-type="Luxury Wedding">
                             <i class="fi fi-sr-heart"></i>
-                            <span>Mega Wedding</span>
+                            <span>Wedding</span>
                         </button>
                         <button type="button" class="evp-quote-type-btn" data-type="Concert / Gala">
                             <i class="fi fi-sr-music"></i>
@@ -829,8 +890,8 @@
                 <!-- 2. Facility Selection -->
                 <div class="evp-quote-section">
                     <div class="evp-quote-sec-header">
-                        <span class="evp-quote-sec-title"><i class="fi fi-sr-building"></i> 2. Select Facilities Required</span>
-                        <span style="font-size: 11px; color:#64748B; font-weight:600;">Select one or more</span>
+                        <span class="evp-quote-sec-title"><span class="evp-quote-step-num">2</span> Select Facilities Required</span>
+                        <span class="evp-quote-sec-hint">Approx. Dimensions &amp; Capacities</span>
                     </div>
                     <div class="evp-quote-facilities" id="evp-quote-facilities-grid">
                         <!-- Populated dynamically via JS -->
@@ -840,24 +901,24 @@
                 <!-- 3. Attendance & Duration -->
                 <div class="evp-quote-section">
                     <div class="evp-quote-sec-header">
-                        <span class="evp-quote-sec-title"><i class="fi fi-sr-users"></i> 3. Expected Attendees &amp; Duration</span>
+                        <span class="evp-quote-sec-title"><span class="evp-quote-step-num">3</span> Expected Attendees &amp; Duration</span>
                     </div>
                     <div class="evp-quote-slider-row">
                         <div class="evp-quote-slider-labels">
-                            <span style="font-size: 12px; font-weight: 700; color:#5C5C7A;">Estimated Attendance</span>
+                            <span style="font-size: 11.5px; font-weight: 700; color:#64748B;">Estimated Attendees (Approx.)</span>
                             <div class="evp-quote-slider-value">
-                                <span id="evp-quote-pax-display">2,500 Pax</span>
+                                <span id="evp-quote-pax-display">~2,500 Pax</span>
                             </div>
                         </div>
                         <input type="range" class="evp-quote-range" id="evp-quote-pax-range" min="300" max="15000" step="100" value="2500" />
                         
-                        <div style="margin-top: 6px;">
-                            <span style="font-size: 11px; font-weight: 700; color:#5C5C7A; display:block; margin-bottom: 4px;">Event Duration</span>
+                        <div style="margin-top: 4px;">
+                            <span style="font-size: 11px; font-weight: 700; color:#64748B; display:block; margin-bottom: 4px;">Approx. Event Duration</span>
                             <div class="evp-quote-days-row" id="evp-quote-days-row">
                                 <button type="button" class="evp-quote-day-chip" data-days="1">1 Day</button>
                                 <button type="button" class="evp-quote-day-chip is-active" data-days="2">2 Days</button>
-                                <button type="button" class="evp-quote-day-chip" data-days="3">3 Days (10% off)</button>
-                                <button type="button" class="evp-quote-day-chip" data-days="4">4+ Days (15% off)</button>
+                                <button type="button" class="evp-quote-day-chip" data-days="3">3 Days (~10% off)</button>
+                                <button type="button" class="evp-quote-day-chip" data-days="4">4+ Days (~15% off)</button>
                             </div>
                         </div>
                     </div>
@@ -866,7 +927,8 @@
                 <!-- 4. Key Add-on Services -->
                 <div class="evp-quote-section">
                     <div class="evp-quote-sec-header">
-                        <span class="evp-quote-sec-title"><i class="fi fi-sr-apps"></i> 4. Key Facility Inclusions &amp; Utilities</span>
+                        <span class="evp-quote-sec-title"><span class="evp-quote-step-num">4</span> Key Facility Inclusions &amp; Utilities (Optional)</span>
+                        <span class="evp-quote-sec-hint">Approx. Day Rates</span>
                     </div>
                     <div class="evp-quote-addons" id="evp-quote-addons-grid">
                         <!-- Populated dynamically -->
@@ -877,29 +939,29 @@
                 <div class="evp-quote-summary-box">
                     <div class="evp-quote-metrics-row">
                         <div class="evp-quote-metric-item">
-                            <span class="evp-quote-metric-sub">Total Floor Space</span>
-                            <span class="evp-quote-metric-val" id="evp-summary-area">54,144 sq. ft</span>
+                            <span class="evp-quote-metric-sub">Approx. Floor Space</span>
+                            <span class="evp-quote-metric-val" id="evp-summary-area">~54,144 sq. ft</span>
                         </div>
                         <div class="evp-quote-metric-item">
                             <span class="evp-quote-metric-sub">Capacity Check</span>
                             <div id="evp-summary-capacity">
-                                <span class="evp-quote-capacity-badge is-good"><i class="fi fi-sr-check-circle"></i> Comfortable</span>
+                                <span class="evp-quote-capacity-badge is-good"><i class="fi fi-sr-check-circle"></i> Comfortable Capacity</span>
                             </div>
                         </div>
                         <div class="evp-quote-metric-item">
-                            <span class="evp-quote-metric-sub">Event Span</span>
+                            <span class="evp-quote-metric-sub">Approx. Duration</span>
                             <span class="evp-quote-metric-val" id="evp-summary-span">2 Days (Trade Expo)</span>
                         </div>
                     </div>
 
                     <div class="evp-quote-price-row">
                         <div class="evp-quote-price-label">
-                            <span class="evp-quote-price-title">Estimated Base Rental Budget</span>
-                            <span class="evp-quote-price-disclaimer">*Ballpark indicative rate. Excludes statutory 18% GST. Final proposal subject to dates.</span>
+                            <span class="evp-quote-price-title">Approx. Indicative Rental Estimate</span>
+                            <span class="evp-quote-price-disclaimer">*Ballpark estimate for preliminary planning. Excludes 18% GST. Final proposal subject to official dates &amp; requirements.</span>
                         </div>
                         <div class="evp-quote-price-val" id="evp-summary-price">
-                            ₹ 9.5L – 11.0L
-                            <small>Indicative Range</small>
+                            ~₹ 9.5L – ₹ 11.0L
+                            <small>Approx. Base Venue Hire</small>
                         </div>
                     </div>
                 </div>
@@ -913,13 +975,13 @@
                 </a>
                 <button type="button" class="evp-quote-btn-copy" id="evp-quote-btn-copy">
                     <i class="fi fi-rr-copy"></i>
-                    <span>Copy Quote</span>
+                    <span>Copy Approx. Estimate</span>
                 </button>
             </div>
 
             <!-- Toast -->
             <div class="evp-quote-toast" id="evp-quote-toast">
-                <i class="fi fi-rr-check" style="color:#10B981;"></i> Quote copied to clipboard!
+                <i class="fi fi-rr-check" style="color:#10B981;"></i> Approximate estimate copied to clipboard!
             </div>
         </div>
     `;
@@ -945,7 +1007,7 @@
             <div class="evp-quote-checkbox"><i class="fi fi-rr-check"></i></div>
             <div class="evp-quote-fac-info">
                 <span class="evp-quote-fac-name">${fac.name}</span>
-                <span class="evp-quote-fac-meta">${fac.sqft.toLocaleString()} sq. ft • Up to ${fac.maxCapacity.toLocaleString()} Pax</span>
+                <span class="evp-quote-fac-meta">Approx. ${fac.sqft.toLocaleString()} sq. ft • Up to ~${fac.maxCapacity.toLocaleString()} Pax</span>
             </div>
         `;
         card.addEventListener("click", () => {
@@ -972,7 +1034,10 @@
         chip.setAttribute("data-id", addon.id);
         chip.innerHTML = `
             <div class="evp-quote-checkbox"><i class="fi fi-rr-check"></i></div>
-            <span class="evp-quote-addon-text">${addon.name}</span>
+            <div class="evp-quote-addon-info">
+                <span class="evp-quote-addon-text">${addon.name}</span>
+                <span class="evp-quote-addon-rate">${addon.approxRateText}</span>
+            </div>
         `;
         chip.addEventListener("click", () => {
             if (state.selectedAddons.includes(addon.id)) {
@@ -1003,7 +1068,7 @@
     const paxDisplay = document.getElementById("evp-quote-pax-display");
     paxRange.addEventListener("input", (e) => {
         state.pax = parseInt(e.target.value, 10);
-        paxDisplay.textContent = state.pax >= 15000 ? "15,000+ Pax" : state.pax.toLocaleString() + " Pax";
+        paxDisplay.textContent = state.pax >= 15000 ? "15,000+ Pax (Approx.)" : `~${state.pax.toLocaleString()} Pax`;
         recalculateQuote();
     });
 
@@ -1067,22 +1132,22 @@
         const capEl = document.getElementById("evp-summary-capacity");
         const priceEl = document.getElementById("evp-summary-price");
 
-        if (areaEl) areaEl.textContent = totalSqFt.toLocaleString() + " sq. ft";
+        if (areaEl) areaEl.textContent = `~${totalSqFt.toLocaleString()} sq. ft`;
         if (spanEl) spanEl.textContent = `${state.days} Day${state.days > 1 ? "s" : ""} • ${state.eventType}`;
 
         // Capacity Health Status
         if (capEl) {
             if (state.pax > maxCombinedPax * 1.15) {
-                capEl.innerHTML = `<span class="evp-quote-capacity-badge is-over"><i class="fi fi-sr-exclamation"></i> Overcrowded (${state.pax.toLocaleString()} Pax > ${maxCombinedPax.toLocaleString()} Cap)</span>`;
+                capEl.innerHTML = `<span class="evp-quote-capacity-badge is-over"><i class="fi fi-sr-exclamation"></i> Overcrowded (~${state.pax.toLocaleString()} Pax > ~${maxCombinedPax.toLocaleString()} Cap)</span>`;
             } else if (state.pax > maxCombinedPax * 0.85) {
-                capEl.innerHTML = `<span class="evp-quote-capacity-badge is-tight"><i class="fi fi-sr-info"></i> High Density</span>`;
+                capEl.innerHTML = `<span class="evp-quote-capacity-badge is-tight"><i class="fi fi-sr-info"></i> High Density (~${maxCombinedPax.toLocaleString()} Max)</span>`;
             } else {
-                capEl.innerHTML = `<span class="evp-quote-capacity-badge is-good"><i class="fi fi-sr-check-circle"></i> Comfortable Capacity</span>`;
+                capEl.innerHTML = `<span class="evp-quote-capacity-badge is-good"><i class="fi fi-sr-check-circle"></i> Comfortable Capacity (~${maxCombinedPax.toLocaleString()} Max)</span>`;
             }
         }
 
         if (priceEl) {
-            priceEl.innerHTML = `${formatINR(lowEst)} – ${formatINR(highEst)}<small>Indicative Base Range</small>`;
+            priceEl.innerHTML = `~${formatINR(lowEst)} – ${formatINR(highEst)}<small>Approx. Base Venue Hire</small>`;
         }
 
         // WhatsApp Link Generator
@@ -1102,14 +1167,15 @@
             : "Standard Facility Package";
 
         return (
-            `*EVP Trade & Convention Centre — Event Quote Inquiry*\n` +
-            `• *Event Type:* ${state.eventType}\n` +
+            `*EVP Trade & Convention Centre — Indicative Event Quote Inquiry*\n` +
+            `• *Event Category:* ${state.eventType}\n` +
             `• *Selected Facilities:* ${facNames}\n` +
-            `• *Total Floor Area:* ${totalSqFt.toLocaleString()} sq. ft\n` +
-            `• *Expected Guests:* ${state.pax >= 15000 ? "15,000+" : state.pax.toLocaleString()} Pax\n` +
-            `• *Event Duration:* ${state.days} Day${state.days > 1 ? "s" : ""}\n` +
+            `• *Approx. Total Floor Area:* ~${totalSqFt.toLocaleString()} sq. ft\n` +
+            `• *Approx. Expected Guests:* ${state.pax >= 15000 ? "15,000+" : "~" + state.pax.toLocaleString()} Pax\n` +
+            `• *Approx. Event Duration:* ${state.days} Day${state.days > 1 ? "s" : ""}\n` +
             `• *Inclusions & Add-ons:* ${addonNames}\n` +
-            `• *Estimated Budget:* ${formatLakhs(lowEst)} – ${formatLakhs(highEst)} (Base Venue Hire)\n\n` +
+            `• *Approx. Estimated Budget:* ~${formatLakhs(lowEst)} – ${formatLakhs(highEst)} (Base Venue Hire, Excl. GST)\n\n` +
+            `_Note: These figures are approximate estimates configured via the 360 Virtual Tour._\n` +
             `Could you please check venue date availability for our tentative dates [Enter Dates Here]?`
         );
     }
@@ -1120,7 +1186,7 @@
 
         const summaryText = getSummaryText(lowEst, highEst, totalSqFt);
         const encoded = encodeURIComponent(
-            `Hello EVP Trade Centre Sales Team! 👋\n\nI just configured an event estimate on your 360 Virtual Tour:\n\n${summaryText}`
+            `Hello EVP Trade Centre Sales Team! 👋\n\nI just configured an indicative estimate on your 360 Virtual Tour:\n\n${summaryText}`
         );
         waBtn.href = `https://wa.me/918525811111?text=${encoded}`;
     }
