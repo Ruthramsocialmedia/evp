@@ -758,7 +758,16 @@
                 </div>
             </button>
 
-            <!-- 4. Booking & Inquiries -->
+            <!-- 4. Event Cost Estimator (Instant Quote Calculator) -->
+            <button class="pcis-popover-item" id="popover-btn-quote" type="button" aria-label="Open Event Cost and Hall Rental Estimator">
+                <span class="pcis-popover-icon" style="color:#B45309; background:rgba(255, 183, 3, 0.15); border-color:rgba(255, 183, 3, 0.4);"><i class="fi fi-sr-calculator" aria-hidden="true"></i></span>
+                <div class="pcis-popover-text">
+                    <span class="pcis-popover-title">Cost Estimator</span>
+                    <span class="pcis-popover-sub">Instant Hall Rental &amp; Quote Builder</span>
+                </div>
+            </button>
+
+            <!-- 5. Booking & Inquiries -->
             <button class="pcis-popover-item" id="popover-btn-social" type="button" aria-label="Venue Booking and Event Inquiries">
                 <span class="pcis-popover-icon"><i class="fi fi-sr-phone-call" aria-hidden="true"></i></span>
                 <div class="pcis-popover-text">
@@ -1059,6 +1068,7 @@
     const popSiteMap = document.getElementById("popover-btn-sitemap");
     const legacyStreetBtn = document.getElementById("popover-btn-street-legacy");
     const popDirections = document.getElementById("popover-btn-directions");
+    const popQuote = document.getElementById("popover-btn-quote");
     const popSocial = document.getElementById("popover-btn-social");
 
     let activeTab = null;
@@ -1715,6 +1725,17 @@
                 window.toggleLocation();
             } else {
                 document.dispatchEvent(new CustomEvent("menuItemClick", { detail: { id: "menu-location" } }));
+            }
+        });
+    }
+
+    // ─── Popover Item: Event Cost Estimator ─────────────────────
+    if (popQuote) {
+        popQuote.addEventListener("click", function (e) {
+            e.stopPropagation();
+            closePopover();
+            if (typeof window.openQuoteEstimator === "function") {
+                window.openQuoteEstimator();
             }
         });
     }

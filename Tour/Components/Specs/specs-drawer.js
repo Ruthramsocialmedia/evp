@@ -541,9 +541,14 @@
                                         <div style="font-size: 10.5px; color: #5c5c7a; font-weight: 500;">Interactive layout, aisle clearances &amp; live capacity</div>
                                     </div>
                                 </div>
-                                <button type="button" onclick="if(window.evpLayoutGenerator){window.evpLayoutGenerator.open(); if(typeof window.evpCloseSpecs==='function') window.evpCloseSpecs();}" style="background: #131330; color: #FFB703; border: none; border-radius: 8px; font-size: 11px; font-weight: 800; padding: 6px 12px; cursor: pointer;">
-                                    Blueprint
-                                </button>
+                                <div style="display:flex; align-items:center; gap:6px;">
+                                    <button type="button" onclick="if(window.openQuoteEstimator){window.openQuoteEstimator({hall:'${spec.title}'}); if(typeof window.evpCloseSpecs==='function') window.evpCloseSpecs();}" style="background: #10B981; color: #FFFFFF; border: none; border-radius: 8px; font-size: 11px; font-weight: 800; padding: 6px 11px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                                        <i class="fi fi-sr-calculator"></i> Quote
+                                    </button>
+                                    <button type="button" onclick="if(window.evpLayoutGenerator){window.evpLayoutGenerator.open(); if(typeof window.evpCloseSpecs==='function') window.evpCloseSpecs();}" style="background: #131330; color: #FFB703; border: none; border-radius: 8px; font-size: 11px; font-weight: 800; padding: 6px 12px; cursor: pointer;">
+                                        Blueprint
+                                    </button>
+                                </div>
                             </div>
                         ` : ""}
                     </div>
