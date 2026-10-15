@@ -1216,7 +1216,9 @@
                         <div class="evp-quote-metric-item">
                             <span class="evp-quote-metric-sub">Capacity Check</span>
                             <div id="evp-summary-capacity">
-                                <span class="evp-quote-capacity-badge is-good"><i class="fi fi-sr-check-circle"></i> Comfortable</span>
+                                <span class="evp-quote-capacity-badge is-good" data-cap="good"><i class="fi fi-sr-check-circle"></i> <span>Comfortable</span></span>
+                                <span class="evp-quote-capacity-badge is-tight" data-cap="tight" style="display:none;"><i class="fi fi-sr-info"></i> <span>High Density</span></span>
+                                <span class="evp-quote-capacity-badge is-over" data-cap="over" style="display:none;"><i class="fi fi-sr-exclamation"></i> <span>Overcrowded</span></span>
                             </div>
                         </div>
                         <div class="evp-quote-metric-item">
@@ -1231,8 +1233,8 @@
                             <span class="evp-quote-price-disclaimer">*Ballpark estimate for preliminary planning. Excludes 18% GST. Final proposal subject to dates.</span>
                         </div>
                         <div class="evp-quote-price-val" id="evp-summary-price">
-                            ~₹ 9.5L – ₹ 11.0L
-                            <small>Approx. Base Venue Hire</small>
+                            <span id="evp-summary-price-num">~₹ 9.5L – ₹ 11.0L</span>
+                            <small id="evp-summary-price-sub">Approx. Base Venue Hire</small>
                         </div>
                     </div>
                 </div>
@@ -1419,17 +1421,31 @@
 
         // Capacity Health Status
         if (capEl) {
+            let activeCap = "good";
             if (state.pax > maxCombinedPax * 1.15) {
-                capEl.innerHTML = `<span class="evp-quote-capacity-badge is-over"><i class="fi fi-sr-exclamation"></i> Overcrowded</span>`;
+                activeCap = "over";
             } else if (state.pax > maxCombinedPax * 0.85) {
-                capEl.innerHTML = `<span class="evp-quote-capacity-badge is-tight"><i class="fi fi-sr-info"></i> High Density</span>`;
+                activeCap = "tight";
+            }
+            const badges = capEl.querySelectorAll(".evp-quote-capacity-badge");
+            if (badges.length > 0) {
+                badges.forEach(b => {
+                    b.style.display = b.getAttribute("data-cap") === activeCap ? "" : "none";
+                });
             } else {
-                capEl.innerHTML = `<span class="evp-quote-capacity-badge is-good"><i class="fi fi-sr-check-circle"></i> Comfortable</span>`;
+                capEl.innerHTML = `
+                    <span class="evp-quote-capacity-badge is-good" data-cap="good" style="${activeCap === 'good' ? '' : 'display:none;'}"><i class="fi fi-sr-check-circle"></i> <span>Comfortable</span></span>
+                    <span class="evp-quote-capacity-badge is-tight" data-cap="tight" style="${activeCap === 'tight' ? '' : 'display:none;'}"><i class="fi fi-sr-info"></i> <span>High Density</span></span>
+                    <span class="evp-quote-capacity-badge is-over" data-cap="over" style="${activeCap === 'over' ? '' : 'display:none;'}"><i class="fi fi-sr-exclamation"></i> <span>Overcrowded</span></span>
+                `;
             }
         }
 
-        if (priceEl) {
-            priceEl.innerHTML = `~${formatINR(lowEst)} – ${formatINR(highEst)}<small>Approx. Base Venue Hire</small>`;
+        const priceNumEl = document.getElementById("evp-summary-price-num");
+        if (priceNumEl) {
+            priceNumEl.textContent = `~${formatINR(lowEst)} – ${formatINR(highEst)}`;
+        } else if (priceEl) {
+            priceEl.innerHTML = `<span id="evp-summary-price-num">~${formatINR(lowEst)} – ${formatINR(highEst)}</span><small id="evp-summary-price-sub">Approx. Base Venue Hire</small>`;
         }
 
         // Update Sticky Footer Strip

@@ -219,6 +219,29 @@
             box-shadow: 0 0 6px rgba(255, 183, 3, 0.45);
         }
 
+        /* ── Venue Pre-rendered Section & Offscreen Accessible Hiding ── */
+        .pcis-specs-venue-section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+        }
+        .pcis-specs-venue-section.is-hidden {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 1px !important;
+            height: 1px !important;
+            margin: -1px !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            clip-path: inset(50%) !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            border: 0 !important;
+        }
+
         /* Bento Card Base */
         .pcis-bento-card {
             background: rgba(255, 255, 255, 0.75);
@@ -422,30 +445,18 @@
         return "Hall A";
     }
 
-    // ── Render Bento Cards ────────────────────────────────────────────
-    function renderSpecs(sceneName) {
-        if (!window.getSpecsForScene) return;
-        const spec = window.getSpecsForScene(sceneName);
-        if (!spec) return;
+    // ── Build Single Venue Bento Section ─────────────────────────────
+    function buildVenueSectionHtml(specKey, spec, isActive) {
+        let html = `<div class="pcis-specs-venue-section ${isActive ? "is-active" : "is-hidden"}" data-venue-key="${spec.id || specKey}" data-venue-title="${spec.title}">`;
 
-        currentRenderedKey = spec.title;
-
-        // Header Updates
-        document.getElementById("pcis-specs-badge").innerHTML = `<i class="fi fi-sr-check-circle"></i> <span>${spec.badge || "Verified Specs"}</span>`;
-        document.getElementById("pcis-specs-name").textContent = spec.title;
-        document.getElementById("pcis-specs-category").textContent = `${spec.category} • Official EVP Architecture`;
-
-        // Wire Directions Button
-        navBtn.onclick = function () {
-            closeSpecs();
-            if (typeof window.openDirectionsForLocation === "function") {
-                window.openDirectionsForLocation(spec.title);
-            } else if (typeof window.toggleLocation === "function") {
-                window.toggleLocation();
-            }
-        };
-
-        let html = "";
+        // Offscreen metadata carrier for header translation synchronization
+        html += `
+            <div class="pcis-specs-meta-carrier" style="position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); clip-path: inset(50%); opacity: 0; pointer-events: none;" aria-hidden="true">
+                <span class="pcis-specs-carrier-title">${spec.title}</span>
+                <span class="pcis-specs-carrier-badge">${spec.badge || "Verified Specs"}</span>
+                <span class="pcis-specs-carrier-category">${spec.category} • Official EVP Architecture</span>
+            </div>
+        `;
 
         // Card 1: Dimensions & Clearance
         if (spec.areaSqFt || spec.dimensionsMetric || spec.clearHeightMin) {
@@ -533,6 +544,66 @@
                                 <span class="pcis-bento-badge-count">${spec.capacities.boardroom}</span>
                             </div>
                         ` : ""}
+                        ${spec.capacities.hospitality ? `
+                            <div class="pcis-bento-badge-row">
+                                <span class="pcis-bento-badge-name"><i class="fi fi-rr-crown"></i> VIP Hospitality</span>
+                                <span class="pcis-bento-badge-count">${spec.capacities.hospitality}</span>
+                            </div>
+                        ` : ""}
+                        ${spec.capacities.coworking ? `
+                            <div class="pcis-bento-badge-row">
+                                <span class="pcis-bento-badge-name"><i class="fi fi-rr-laptop"></i> Co-Working Capacity</span>
+                                <span class="pcis-bento-badge-count">${spec.capacities.coworking}</span>
+                            </div>
+                        ` : ""}
+                        ${spec.capacities.cafe ? `
+                            <div class="pcis-bento-badge-row">
+                                <span class="pcis-bento-badge-name"><i class="fi fi-rr-coffee"></i> Café Seating</span>
+                                <span class="pcis-bento-badge-count">${spec.capacities.cafe}</span>
+                            </div>
+                        ` : ""}
+                        ${spec.capacities.throughput ? `
+                            <div class="pcis-bento-badge-row">
+                                <span class="pcis-bento-badge-name"><i class="fi fi-rr-restaurant"></i> Meal Throughput</span>
+                                <span class="pcis-bento-badge-count">${spec.capacities.throughput}</span>
+                            </div>
+                        ` : ""}
+                        ${spec.capacities.seated ? `
+                            <div class="pcis-bento-badge-row">
+                                <span class="pcis-bento-badge-name"><i class="fi fi-rr-utensils"></i> Dining Capacity</span>
+                                <span class="pcis-bento-badge-count">${spec.capacities.seated}</span>
+                            </div>
+                        ` : ""}
+                        ${spec.capacities.registration ? `
+                            <div class="pcis-bento-badge-row">
+                                <span class="pcis-bento-badge-name"><i class="fi fi-rr-id-badge"></i> Registration Flow</span>
+                                <span class="pcis-bento-badge-count">${spec.capacities.registration}</span>
+                            </div>
+                        ` : ""}
+                        ${spec.capacities.reception ? `
+                            <div class="pcis-bento-badge-row">
+                                <span class="pcis-bento-badge-name"><i class="fi fi-rr-bell"></i> Welcome Concourse</span>
+                                <span class="pcis-bento-badge-count">${spec.capacities.reception}</span>
+                            </div>
+                        ` : ""}
+                        ${spec.capacities.guests ? `
+                            <div class="pcis-bento-badge-row">
+                                <span class="pcis-bento-badge-name"><i class="fi fi-rr-bed"></i> Accommodation Capacity</span>
+                                <span class="pcis-bento-badge-count">${spec.capacities.guests}</span>
+                            </div>
+                        ` : ""}
+                        ${spec.capacities.concertFestival ? `
+                            <div class="pcis-bento-badge-row">
+                                <span class="pcis-bento-badge-name"><i class="fi fi-rr-music"></i> Festival / Concert</span>
+                                <span class="pcis-bento-badge-count">${spec.capacities.concertFestival}</span>
+                            </div>
+                        ` : ""}
+                        ${spec.capacities.cars ? `
+                            <div class="pcis-bento-badge-row">
+                                <span class="pcis-bento-badge-name"><i class="fi fi-rr-car"></i> Car Parking</span>
+                                <span class="pcis-bento-badge-count">${spec.capacities.cars}</span>
+                            </div>
+                        ` : ""}
                         ${/hall\s*[a-d]/i.test(spec.title || "") ? `
                             <div style="margin-top: 10px; padding: 10px 14px; background: rgba(255, 183, 3, 0.12); border: 1px solid rgba(255, 183, 3, 0.4); border-radius: 12px; display: flex; align-items: center; justify-content: space-between;">
                                 <div style="display: flex; align-items: center; gap: 8px;">
@@ -544,10 +615,10 @@
                                 </div>
                                 <div style="display:flex; align-items:center; gap:6px;">
                                     <button type="button" onclick="if(window.openQuoteEstimator){window.openQuoteEstimator({hall:'${spec.title}'}); if(typeof window.evpCloseSpecs==='function') window.evpCloseSpecs();}" style="background: #10B981; color: #FFFFFF; border: none; border-radius: 8px; font-size: 11px; font-weight: 800; padding: 6px 11px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
-                                        <i class="fi fi-sr-calculator"></i> Quote
+                                        <i class="fi fi-sr-calculator"></i> <span>Quote</span>
                                     </button>
                                     <button type="button" onclick="if(window.evpLayoutGenerator){window.evpLayoutGenerator.open(); if(typeof window.evpCloseSpecs==='function') window.evpCloseSpecs();}" style="background: #131330; color: #FFB703; border: none; border-radius: 8px; font-size: 11px; font-weight: 800; padding: 6px 12px; cursor: pointer;">
-                                        Blueprint
+                                        <span>Blueprint</span>
                                     </button>
                                 </div>
                             </div>
@@ -558,7 +629,7 @@
         }
 
         // Card 3: Structural & Rigging Strength
-        if (spec.floorLoad || spec.riggingPoints) {
+        if (spec.floorLoad || spec.riggingPoints || spec.surface || spec.roadSurface) {
             html += `
                 <div class="pcis-bento-card">
                     <div class="pcis-bento-card-header">
@@ -570,6 +641,18 @@
                             <div class="pcis-bento-metric-item full-width">
                                 <span class="pcis-bento-metric-label">Exhibit Floor Load</span>
                                 <span class="pcis-bento-metric-value highlight">${spec.floorLoad}</span>
+                            </div>
+                        ` : ""}
+                        ${spec.surface ? `
+                            <div class="pcis-bento-metric-item full-width">
+                                <span class="pcis-bento-metric-label">Ground Surface</span>
+                                <span class="pcis-bento-metric-value">${spec.surface}</span>
+                            </div>
+                        ` : ""}
+                        ${spec.roadSurface ? `
+                            <div class="pcis-bento-metric-item full-width">
+                                <span class="pcis-bento-metric-label">Road Surface</span>
+                                <span class="pcis-bento-metric-value">${spec.roadSurface}</span>
                             </div>
                         ` : ""}
                         ${spec.hangingLoad ? `
@@ -590,7 +673,7 @@
         }
 
         // Card 4: Electrical, HVAC & Utilities
-        if (spec.coolingCapacity || spec.powerPoints || spec.lighting) {
+        if (spec.coolingCapacity || spec.powerPoints || spec.lighting || spec.waterReserve) {
             html += `
                 <div class="pcis-bento-card">
                     <div class="pcis-bento-card-header">
@@ -623,13 +706,19 @@
                                 <span class="pcis-bento-metric-value">${spec.lighting}</span>
                             </div>
                         ` : ""}
+                        ${spec.waterReserve ? `
+                            <div class="pcis-bento-metric-item full-width">
+                                <span class="pcis-bento-metric-label">Water Reserve</span>
+                                <span class="pcis-bento-metric-value highlight">${spec.waterReserve}</span>
+                            </div>
+                        ` : ""}
                     </div>
                 </div>
             `;
         }
 
         // Card 5: Ingress, Security & Amenities
-        if (spec.accessDoors || spec.cctvCameras || spec.washrooms || spec.amenities) {
+        if (spec.accessDoors || spec.cctvCameras || spec.washrooms || spec.amenities || spec.security) {
             html += `
                 <div class="pcis-bento-card">
                     <div class="pcis-bento-card-header">
@@ -655,10 +744,22 @@
                                 <span class="pcis-bento-metric-value">${spec.cctvCameras}</span>
                             </div>
                         ` : ""}
+                        ${spec.security ? `
+                            <div class="pcis-bento-metric-item full-width">
+                                <span class="pcis-bento-metric-label">Perimeter Security</span>
+                                <span class="pcis-bento-metric-value">${spec.security}</span>
+                            </div>
+                        ` : ""}
                         ${spec.washrooms ? `
                             <div class="pcis-bento-metric-item full-width">
                                 <span class="pcis-bento-metric-label">Restrooms</span>
                                 <span class="pcis-bento-metric-value">${spec.washrooms}</span>
+                            </div>
+                        ` : ""}
+                        ${spec.amenities ? `
+                            <div class="pcis-bento-metric-item full-width">
+                                <span class="pcis-bento-metric-label">Exclusive Amenities</span>
+                                <span class="pcis-bento-metric-value">${spec.amenities}</span>
                             </div>
                         ` : ""}
                     </div>
@@ -666,7 +767,122 @@
             `;
         }
 
-        cardsContainer.innerHTML = html;
+        html += `</div>`;
+        return html;
+    }
+
+    // ── Mount All Venue Specs at Startup for Instant Multi-lingual Translation ──
+    function mountAllVenueSpecs() {
+        if (!window.EVP_VENUE_SPECS || cardsContainer.children.length > 0) return;
+        const activeName = getActiveSceneName();
+        const activeSpec = window.getSpecsForScene ? window.getSpecsForScene(activeName) : null;
+        const activeTitle = activeSpec ? activeSpec.title : "Exhibition Hall A";
+
+        let allHtml = "";
+        Object.keys(window.EVP_VENUE_SPECS).forEach(key => {
+            const spec = window.EVP_VENUE_SPECS[key];
+            const isActive = (spec.title === activeTitle || key === activeTitle);
+            allHtml += buildVenueSectionHtml(key, spec, isActive);
+        });
+
+        cardsContainer.innerHTML = allHtml;
+
+        // Sync initial header
+        const activeSection = cardsContainer.querySelector(".pcis-specs-venue-section.is-active") || cardsContainer.firstElementChild;
+        if (activeSection) {
+            const carrierTitle = activeSection.querySelector(".pcis-specs-carrier-title");
+            const carrierBadge = activeSection.querySelector(".pcis-specs-carrier-badge");
+            const carrierCategory = activeSection.querySelector(".pcis-specs-carrier-category");
+            if (carrierTitle) document.getElementById("pcis-specs-name").innerHTML = carrierTitle.innerHTML;
+            if (carrierBadge) document.getElementById("pcis-specs-badge").innerHTML = `<i class="fi fi-sr-check-circle"></i> <span>${carrierBadge.innerHTML}</span>`;
+            if (carrierCategory) document.getElementById("pcis-specs-category").innerHTML = carrierCategory.innerHTML;
+        }
+    }
+
+    // ── Non-Destructive Active Venue Switcher ──────────────────────────
+    function renderSpecs(sceneName) {
+        if (!window.getSpecsForScene) return;
+        const spec = window.getSpecsForScene(sceneName);
+        if (!spec) return;
+
+        currentRenderedKey = spec.title;
+
+        // Ensure panels are mounted
+        mountAllVenueSpecs();
+
+        // Find matching pre-rendered section
+        const sections = cardsContainer.querySelectorAll(".pcis-specs-venue-section");
+        let matchedSection = null;
+
+        sections.forEach(sec => {
+            const vKey = sec.getAttribute("data-venue-key");
+            const vTitle = sec.getAttribute("data-venue-title");
+            if (vKey === spec.id || vTitle === spec.title || (spec.title && vTitle && vTitle.toLowerCase() === spec.title.toLowerCase())) {
+                matchedSection = sec;
+            }
+        });
+
+        // If not found in pre-rendered (e.g. uncatalogued custom panorama), build & append it
+        if (!matchedSection) {
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = buildVenueSectionHtml(spec.id || "custom", spec, true);
+            matchedSection = tempDiv.firstElementChild;
+            cardsContainer.appendChild(matchedSection);
+        }
+
+        // Toggle active/hidden
+        sections.forEach(sec => {
+            if (sec === matchedSection) {
+                sec.classList.remove("is-hidden");
+                sec.classList.add("is-active");
+            } else {
+                sec.classList.add("is-hidden");
+                sec.classList.remove("is-active");
+            }
+        });
+
+        // Non-destructively sync the Header from the matched section's translated carrier
+        const carrierTitle = matchedSection.querySelector(".pcis-specs-carrier-title");
+        const carrierBadge = matchedSection.querySelector(".pcis-specs-carrier-badge");
+        const carrierCategory = matchedSection.querySelector(".pcis-specs-carrier-category");
+
+        const nameEl = document.getElementById("pcis-specs-name");
+        const badgeEl = document.getElementById("pcis-specs-badge");
+        const catEl = document.getElementById("pcis-specs-category");
+
+        if (nameEl) {
+            if (carrierTitle && carrierTitle.innerHTML) {
+                nameEl.innerHTML = carrierTitle.innerHTML;
+            } else {
+                nameEl.textContent = spec.title;
+            }
+        }
+
+        if (badgeEl) {
+            if (carrierBadge && carrierBadge.innerHTML) {
+                badgeEl.innerHTML = `<i class="fi fi-sr-check-circle"></i> <span>${carrierBadge.innerHTML}</span>`;
+            } else {
+                badgeEl.innerHTML = `<i class="fi fi-sr-check-circle"></i> <span>${spec.badge || "Verified Specs"}</span>`;
+            }
+        }
+
+        if (catEl) {
+            if (carrierCategory && carrierCategory.innerHTML) {
+                catEl.innerHTML = carrierCategory.innerHTML;
+            } else {
+                catEl.textContent = `${spec.category} • Official EVP Architecture`;
+            }
+        }
+
+        // Wire Directions Button with actual spec title
+        navBtn.onclick = function () {
+            closeSpecs();
+            if (typeof window.openDirectionsForLocation === "function") {
+                window.openDirectionsForLocation(spec.title);
+            } else if (typeof window.toggleLocation === "function") {
+                window.toggleLocation();
+            }
+        };
     }
 
     // ── Public APIs ───────────────────────────────────────────────────
@@ -737,5 +953,33 @@
     window.evpOpenSpecs = openSpecs;
     window.evpCloseSpecs = closeSpecs;
     window.evpToggleSpecs = toggleSpecs;
+
+    // ── Immediate Startup Pre-Mounting ──────────────────────────────
+    if (window.EVP_VENUE_SPECS) {
+        mountAllVenueSpecs();
+    } else {
+        const mountInterval = setInterval(function () {
+            if (window.EVP_VENUE_SPECS) {
+                clearInterval(mountInterval);
+                mountAllVenueSpecs();
+            }
+        }, 30);
+        setTimeout(function () { clearInterval(mountInterval); }, 6000);
+    }
+
+    // ── Re-sync active header if language changes ───────────────────
+    document.addEventListener("evpLanguageChanged", function () {
+        setTimeout(function () {
+            const activeSection = cardsContainer.querySelector(".pcis-specs-venue-section.is-active");
+            if (activeSection) {
+                const carrierTitle = activeSection.querySelector(".pcis-specs-carrier-title");
+                const carrierBadge = activeSection.querySelector(".pcis-specs-carrier-badge");
+                const carrierCategory = activeSection.querySelector(".pcis-specs-carrier-category");
+                if (carrierTitle && carrierTitle.innerHTML) document.getElementById("pcis-specs-name").innerHTML = carrierTitle.innerHTML;
+                if (carrierBadge && carrierBadge.innerHTML) document.getElementById("pcis-specs-badge").innerHTML = `<i class="fi fi-sr-check-circle"></i> <span>${carrierBadge.innerHTML}</span>`;
+                if (carrierCategory && carrierCategory.innerHTML) document.getElementById("pcis-specs-category").innerHTML = carrierCategory.innerHTML;
+            }
+        }, 150);
+    });
 
 })();
