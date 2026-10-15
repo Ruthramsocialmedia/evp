@@ -536,33 +536,64 @@
 
         /* Duration Chips */
         .evp-quote-days-row {
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            align-items: stretch;
         }
         .evp-quote-day-chip {
-            flex: 1;
-            padding: 6px 3px;
+            padding: 6px 4px;
             background: #F8FAFC;
             border: 1px solid #E2E8F0;
-            border-radius: 7px;
-            font-size: 10.5px;
-            font-weight: 700;
-            color: #475569;
-            text-align: center;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 160ms ease;
             font-family: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            min-height: 46px;
+            box-sizing: border-box;
+            user-select: none;
         }
         .evp-quote-day-chip:hover {
             border-color: #CBD5E1;
-            color: #131330;
+            background: #FFFFFF;
         }
         .evp-quote-day-chip.is-active {
             background: #131330;
             border-color: #131330;
+            box-shadow: 0 2px 6px rgba(19, 19, 48, 0.12);
+        }
+        .evp-quote-day-chip .day-val {
+            font-size: 11px;
+            font-weight: 800;
+            color: #131330;
+            line-height: 1.1;
+            white-space: nowrap;
+        }
+        .evp-quote-day-chip.is-active .day-val {
             color: #FFFFFF;
-            box-shadow: 0 2px 5px rgba(19, 19, 48, 0.12);
+        }
+        .evp-quote-day-chip .day-disc {
+            font-size: 9px;
+            font-weight: 700;
+            color: #059669;
+            background: rgba(5, 150, 105, 0.08);
+            padding: 1px 5px;
+            border-radius: 4px;
+            line-height: 1.1;
+            white-space: nowrap;
+        }
+        .evp-quote-day-chip:first-child .day-disc {
+            color: #64748B;
+            background: #EDF2F7;
+        }
+        .evp-quote-day-chip.is-active .day-disc {
+            background: rgba(255, 183, 3, 0.22);
+            color: #FFB703;
         }
 
         /* ── Step 4: Add-ons Checklist ── */
@@ -984,9 +1015,22 @@
                 font-size: 11px !important;
                 padding: 2px 6px !important;
             }
+            .evp-quote-days-row {
+                grid-template-columns: repeat(4, 1fr) !important;
+                gap: 4px !important;
+            }
             .evp-quote-day-chip {
-                padding: 5px 2px !important;
-                font-size: 9.5px !important;
+                padding: 4px 2px !important;
+                min-height: 42px !important;
+                border-radius: 7px !important;
+                gap: 2px !important;
+            }
+            .evp-quote-day-chip .day-val {
+                font-size: 10px !important;
+            }
+            .evp-quote-day-chip .day-disc {
+                font-size: 8px !important;
+                padding: 1px 3px !important;
             }
             .evp-quote-addons {
                 grid-template-columns: repeat(2, 1fr) !important;
@@ -1130,10 +1174,22 @@
                         <div style="margin-top: 2px;">
                             <span style="font-size: 10.5px; font-weight: 700; color:#64748B; display:block; margin-bottom: 3px;">Approx. Event Duration</span>
                             <div class="evp-quote-days-row" id="evp-quote-days-row">
-                                <button type="button" class="evp-quote-day-chip" data-days="1">1 Day</button>
-                                <button type="button" class="evp-quote-day-chip is-active" data-days="2">2 Days</button>
-                                <button type="button" class="evp-quote-day-chip" data-days="3">3 Days (~10% off)</button>
-                                <button type="button" class="evp-quote-day-chip" data-days="4">4+ Days (~15% off)</button>
+                                <button type="button" class="evp-quote-day-chip" data-days="1">
+                                    <span class="day-val">1 Day</span>
+                                    <span class="day-disc">Base</span>
+                                </button>
+                                <button type="button" class="evp-quote-day-chip is-active" data-days="2">
+                                    <span class="day-val">2 Days</span>
+                                    <span class="day-disc">5% off</span>
+                                </button>
+                                <button type="button" class="evp-quote-day-chip" data-days="3">
+                                    <span class="day-val">3 Days</span>
+                                    <span class="day-disc">10% off</span>
+                                </button>
+                                <button type="button" class="evp-quote-day-chip" data-days="4">
+                                    <span class="day-val">4+ Days</span>
+                                    <span class="day-disc">15% off</span>
+                                </button>
                             </div>
                         </div>
                     </div>
