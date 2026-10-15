@@ -33,6 +33,11 @@
             <i class="fi fi-sr-music-alt-slash" aria-hidden="true"></i>
         </button>
 
+        <!-- Language: Regional & National Selector -->
+        <button class="pcis-action-btn btn-language" id="btn-language-toggle" type="button" aria-label="Change language" data-tooltip="Language">
+            <i class="fi fi-sr-globe" aria-hidden="true"></i>
+        </button>
+
         <!-- Fullscreen: Expand / Compress -->
         <button class="pcis-action-btn btn-fullscreen" id="btn-fullscreen-toggle" type="button" aria-label="Enter fullscreen" data-tooltip="Fullscreen">
             <i class="fi fi-rr-expand" aria-hidden="true"></i>
@@ -43,6 +48,7 @@
 
     const eyeBtn = document.getElementById("btn-clean-mode");
     const audioBtn = document.getElementById("btn-audio-toggle");
+    const langBtn = document.getElementById("btn-language-toggle");
     const fullBtn = document.getElementById("btn-fullscreen-toggle");
 
     // ─── 1. Eye: Clean Photo Mode ───────────────────────────────
@@ -144,6 +150,17 @@
             }
         }
     });
+
+    // ─── 4. Language: Open Selector ────────────────────────────
+    if (langBtn) {
+        langBtn.addEventListener("click", function () {
+            if (typeof window.openLanguage === "function") {
+                window.openLanguage();
+            } else {
+                document.dispatchEvent(new CustomEvent("menuItemClick", { detail: { id: "menu-language" } }));
+            }
+        });
+    }
 
     document.addEventListener("fullscreenchange", updateFullscreenUI);
 })();

@@ -767,7 +767,16 @@
                 </div>
             </button>
 
-            <!-- 5. Booking & Inquiries -->
+            <!-- 5. Select Language -->
+            <button class="pcis-popover-item" id="popover-btn-language" type="button" aria-label="Select Tour Language">
+                <span class="pcis-popover-icon" style="color:#0284C7; background:rgba(2, 132, 199, 0.12); border-color:rgba(2, 132, 199, 0.3);"><i class="fi fi-sr-globe" aria-hidden="true"></i></span>
+                <div class="pcis-popover-text">
+                    <span class="pcis-popover-title">Select Language</span>
+                    <span class="pcis-popover-sub">English, தமிழ், हिन्दी &amp; Regional</span>
+                </div>
+            </button>
+
+            <!-- 6. Booking & Inquiries -->
             <button class="pcis-popover-item" id="popover-btn-social" type="button" aria-label="Venue Booking and Event Inquiries">
                 <span class="pcis-popover-icon"><i class="fi fi-sr-phone-call" aria-hidden="true"></i></span>
                 <div class="pcis-popover-text">
@@ -1069,6 +1078,7 @@
     const legacyStreetBtn = document.getElementById("popover-btn-street-legacy");
     const popDirections = document.getElementById("popover-btn-directions");
     const popQuote = document.getElementById("popover-btn-quote");
+    const popLanguage = document.getElementById("popover-btn-language");
     const popSocial = document.getElementById("popover-btn-social");
 
     let activeTab = null;
@@ -1736,6 +1746,19 @@
             closePopover();
             if (typeof window.openQuoteEstimator === "function") {
                 window.openQuoteEstimator();
+            }
+        });
+    }
+
+    // ─── Popover Item: Select Language ──────────────────────────
+    if (popLanguage) {
+        popLanguage.addEventListener("click", function (e) {
+            e.stopPropagation();
+            closePopover();
+            if (typeof window.openLanguage === "function") {
+                window.openLanguage();
+            } else {
+                document.dispatchEvent(new CustomEvent("menuItemClick", { detail: { id: "menu-language" } }));
             }
         });
     }
